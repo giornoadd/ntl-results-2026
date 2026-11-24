@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTL Synergy Token 2026 — Club Year Replay</title>
+<style>
+  :root {
+    --bg0: #070B14;
+    --bg1: #0B1120;
+    --bg2: #111827;
+    --card: rgba(17, 24, 39, 0.92);
+    --border: rgba(148, 163, 184, 0.22);
+    --text: #F8FAFC;
+    --muted: #94A3B8;
+    --manda: #38BDF8;
+    --itsec: #F59E0B;
+    --itsys: #10B981;
+    --hybrid: #A78BFA;
+    --coral: #FB7185;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%;
+    background: radial-gradient(circle at 85% 10%, rgba(56,189,248,0.16), transparent 45%),
+                radial-gradient(circle at 12% 90%, rgba(16,185,129,0.12), transparent 45%),
+                linear-gradient(135deg, var(--bg0), var(--bg1) 55%, #0F172A);
+    color: var(--text);
+    font-family: 'Noto Sans Thai UI', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    overflow-x: hidden;
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 40;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 12px 22px;
+    background: rgba(7, 11, 20, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: 0.6px; font-size: 15px; }
+  .brand-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--manda); box-shadow: 0 0 12px var(--manda); }
+  .chapters-nav { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .chap-btn {
+    background: transparent; color: var(--muted); border: 1px solid transparent;
+    padding: 6px 12px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 700; transition: 0.2s;
+  }
+  .chap-btn:hover { color: var(--text); border-color: var(--border); }
+  .chap-btn.active { background: rgba(56, 189, 248, 0.16); color: #7DD3FC; border-color: rgba(56, 189, 248, 0.45); }
+  .actions { display: flex; gap: 8px; align-items: center; }
+  .btn {
+    background: #1E293B; color: var(--text); border: 1px solid var(--border);
+    padding: 7px 14px; border-radius: 999px; cursor: pointer; font-size: 13px; font-weight: 700; transition: 0.2s;
+  }
+  .btn:hover { border-color: var(--manda); }
+  .btn-primary { background: linear-gradient(135deg, #0284C7, #2563EB); border-color: transparent; }
+  .progress-track { height: 3px; background: rgba(148,163,184,0.15); width: 100%; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--manda), var(--hybrid), var(--itsys)); transition: width 0.3s ease; }
+  .stage {
+    max-width: 1240px; margin: 0 auto; padding: 26px 22px 92px;
+    min-height: calc(100vh - 64px); display: flex; flex-direction: column; justify-content: center;
+  }
+  .slide { display: none; animation: fadeIn 0.35s ease; }
+  .slide.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--manda); margin-bottom: 8px; }
+  h1 { font-size: clamp(34px, 5vw, 66px); line-height: 1.05; font-weight: 900; margin-bottom: 12px; }
+  h2 { font-size: clamp(26px, 3.5vw, 44px); line-height: 1.15; font-weight: 800; margin-bottom: 14px; }
+  .sub { color: var(--muted); font-size: 17px; margin-bottom: 24px; line-height: 1.5; }
+  .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 22px; padding: 22px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.28);
+  }
+  .big-num { font-size: clamp(36px, 4.4vw, 64px); font-weight: 900; line-height: 1.05; margin: 8px 0; font-variant-numeric: tabular-nums; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 7px; padding: 6px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 700; border: 1px solid var(--border); background: #1E293B;
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .bar-track { width: 100%; height: 18px; background: #1E293B; border-radius: 999px; overflow: hidden; margin: 10px 0; }
+  .bar-fill { height: 100%; border-radius: 999px; transition: width 0.55s cubic-bezier(.22,1,.36,1); }
+  .controls-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; }
+  .seg-group { display: inline-flex; background: #0F172A; border: 1px solid var(--border); border-radius: 999px; padding: 3px; gap: 3px; }
+  .seg-btn {
+    background: transparent; color: var(--muted); border: none; padding: 7px 14px; border-radius: 999px;
+    cursor: pointer; font-size: 13px; font-weight: 700; transition: 0.2s;
+  }
+  .seg-btn.active { background: var(--manda); color: #062033; }
+  .race-row { margin-bottom: 16px; }
+  .race-head { display: flex; justify-content: space-between; font-weight: 800; font-size: 16px; margin-bottom: 6px; }
+  .spark-wrap { display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-top: 24px; }
+  .spark-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .spark-bar { width: 100%; max-width: 44px; border-radius: 7px 7px 3px 3px; transition: height 0.35s ease; }
+  .spark-lbl { font-size: 11px; color: var(--muted); margin-top: 6px; font-weight: 700; }
+  .spark-val { font-size: 11px; font-weight: 700; margin-bottom: 4px; color: #CBD5E1; }
+  .wall-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 12px; margin-top: 14px; }
+  .m-tile {
+    background: var(--card); border: 1px solid var(--border); border-left-width: 5px; border-radius: 16px;
+    padding: 13px 14px; cursor: pointer; transition: transform 0.16s, border-color 0.16s;
+  }
+  .m-tile:hover { transform: translateY(-2px); border-color: var(--manda); }
+  .m-tile-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .m-name { font-weight: 800; font-size: 17px; }
+  .m-team { font-size: 11px; font-weight: 800; opacity: 0.9; }
+  .m-hero { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+  .m-meta { font-size: 12px; color: var(--muted); }
+  .search-input {
+    background: #0F172A; border: 1px solid var(--border); color: var(--text); border-radius: 999px;
+    padding: 9px 16px; font-size: 14px; min-width: 220px; outline: none;
+  }
+  .search-input:focus { border-color: var(--manda); }
+  .footer-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 35;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 24px; background: rgba(7, 11, 20, 0.88); backdrop-filter: blur(10px);
+    border-top: 1px solid var(--border);
+  }
+  .modal-backdrop {
+    position: fixed; inset: 0; z-index: 80; background: rgba(3, 7, 18, 0.84); backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center; padding: 18px;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal-card {
+    width: min(740px, 100%); max-height: 92vh; overflow-y: auto;
+    background: #0B1120; border: 1px solid var(--border); border-radius: 26px; padding: 26px;
+    box-shadow: 0 28px 60px rgba(0,0,0,0.55);
+  }
+  .tribe-pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 999px; background: #1E293B; border: 1px solid var(--border); margin: 4px; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .tribe-pill:hover { border-color: var(--manda); }
+  @media (max-width: 680px) {
+    .chapters-nav { display: none; }
+    .topbar { padding: 10px 14px; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="brand-dot"></span><span>NTL CLUB 2026 REPLAY</span></div>
+  <nav class="chapters-nav" id="chaptersNav"></nav>
+  <div class="actions">
+    <button class="btn btn-primary" id="openPickerBtn">หาชื่อฉัน (36 คน)</button>
+    <button class="btn" id="fullscreenBtn">Fullscreen</button>
+  </div>
+</header>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<main class="stage" id="stage"></main>
+
+<footer class="footer-nav">
+  <button class="btn" id="prevBtn">← ย้อนกลับ</button>
+  <span id="slideIndicator" style="color:var(--muted);font-size:13px;font-weight:700;"></span>
+  <button class="btn btn-primary" id="nextBtn">ถัดไป →</button>
+</footer>
+
+<div class="modal-backdrop" id="memberModal">
+  <div class="modal-card" id="modalContent"></div>
+</div>
+
+<script>
+const REPLAY_DATA = {"metadata": {"generated_at": "2026-11-24T06:44:45", "date_range": {"start": "2026-01-01", "end": "2026-11-22"}, "max_upload_date": "2026-11-22", "total_raw_rows": 3436, "total_clean_rows": 3432, "excluded_rows": 4, "registered_members": 36, "active_members": 36, "name_case_merges": {"CHAN": ["CHAN", "Chan"], "Fuse": ["Fuse", "fuse"], "SAND": ["SAND", "Sand"], "ton": ["Ton", "ton"], "ToRo": ["TORO", "ToRo"]}}, "reconciliation_summary": {"raw_rows_total": 3436, "excluded_rows": 4, "clean_rows_total": 3432, "raw_token_sum": 25101.5, "excluded_token_delta": 1987.7, "clean_token_sum": 23113.8, "raw_minus_excluded_vs_clean_diff": 0.0, "action_counts": {"date_ahead_of_upload_kept": 1, "date_ddmm_swapped": 1, "date_recovered_from_image": 174, "distance_recovered_from_base_token": 1, "distance_unit_meters_converted": 1, "duration_clock_range_parsed": 2, "duration_compound_summed": 2, "duration_excel_serial_converted": 6, "duration_sheets_shift_or_wraparound_recovered": 30, "excluded_extreme_distance_outlier": 1, "excluded_future_placeholder": 3}, "warning_counts": {}, "duration_oracle_mismatches": 0}, "top5_vs_backbone31": {"top5": {"group_label": "Top 5 Contributors", "member_count": 5, "activity_count": 1058, "net_token": 8599.3, "run_km": 3763.64, "walk_km": 637.91, "other_exercise_hours": 760.03, "token_share_pct": 37.2, "run_km_share_pct": 36.4, "walk_km_share_pct": 19.57, "other_hours_share_pct": 53.32}, "backbone_31": {"group_label": "Backbone 31 Contributors", "member_count": 31, "activity_count": 2374, "net_token": 14514.5, "run_km": 6574.91, "walk_km": 2621.63, "other_exercise_hours": 665.45, "token_share_pct": 62.8, "run_km_share_pct": 63.6, "walk_km_share_pct": 80.43, "other_hours_share_pct": 46.68}, "club_total": {"group_label": "All 36 Club Members", "member_count": 36, "activity_count": 3432, "net_token": 23113.8, "run_km": 10338.55, "walk_km": 3259.54, "other_exercise_hours": 1425.49, "token_share_pct": 100.0, "run_km_share_pct": 100.0, "walk_km_share_pct": 100.0, "other_hours_share_pct": 100.0}}, "club_monthly": [{"month": "2026-01", "quarter": "Q1", "active_teams": 2, "active_members": 16, "activity_count": 92, "net_token": 523.6, "run_km": 306.4, "walk_km": 156.63, "other_exercise_hours": 0.0}, {"month": "2026-02", "quarter": "Q1", "active_teams": 2, "active_members": 16, "activity_count": 93, "net_token": 576.5, "run_km": 374.97, "walk_km": 126.37, "other_exercise_hours": 0.0}, {"month": "2026-03", "quarter": "Q1", "active_teams": 2, "active_members": 16, "activity_count": 117, "net_token": 803.9, "run_km": 460.98, "walk_km": 251.15, "other_exercise_hours": 0.0}, {"month": "2026-04", "quarter": "Q2", "active_teams": 3, "active_members": 24, "activity_count": 312, "net_token": 1760.7, "run_km": 728.77, "walk_km": 439.37, "other_exercise_hours": 115.61}, {"month": "2026-05", "quarter": "Q2", "active_teams": 3, "active_members": 25, "activity_count": 416, "net_token": 2229.6, "run_km": 977.46, "walk_km": 450.16, "other_exercise_hours": 165.98}, {"month": "2026-06", "quarter": "Q2", "active_teams": 3, "active_members": 23, "activity_count": 388, "net_token": 2004.1, "run_km": 874.45, "walk_km": 389.47, "other_exercise_hours": 156.89}, {"month": "2026-07", "quarter": "Q3", "active_teams": 3, "active_members": 31, "activity_count": 624, "net_token": 4544.0, "run_km": 1874.82, "walk_km": 515.76, "other_exercise_hours": 248.37}, {"month": "2026-08", "quarter": "Q3", "active_teams": 3, "active_members": 31, "activity_count": 598, "net_token": 4320.4, "run_km": 1891.69, "walk_km": 517.65, "other_exercise_hours": 282.18}, {"month": "2026-09", "quarter": "Q3", "active_teams": 3, "active_members": 27, "activity_count": 352, "net_token": 2987.7, "run_km": 1097.5, "walk_km": 212.43, "other_exercise_hours": 217.33}, {"month": "2026-10", "quarter": "Q4", "active_teams": 3, "active_members": 23, "activity_count": 295, "net_token": 2218.6, "run_km": 1110.05, "walk_km": 153.19, "other_exercise_hours": 161.62}, {"month": "2026-11", "quarter": "Q4", "active_teams": 3, "active_members": 21, "activity_count": 145, "net_token": 1144.7, "run_km": 641.46, "walk_km": 47.36, "other_exercise_hours": 77.5}], "club_annual_total": {"month": "TOTAL", "quarter": "ALL", "active_teams": 3, "active_members": 36, "activity_count": 3432, "net_token": 23113.8, "run_km": 10338.55, "walk_km": 3259.54, "other_exercise_hours": 1425.49}, "team_monthly": [{"month": "2026-01", "quarter": "Q1", "team": "Mandalorian", "team_registered_members": 14, "active_members": 8, "activity_count": 42, "net_token": 249.8, "run_km": 148.2, "walk_km": 72.37, "other_exercise_hours": 0.0, "token_per_active_member": 31.23, "run_km_per_active_member": 18.52, "walk_km_per_active_member": 9.05, "other_hours_per_active_member": 0.0, "team_status_note": "Active"}, {"month": "2026-01", "quarter": "Q1", "team": "ITSec", "team_registered_members": 7, "active_members": 0, "activity_count": 0, "net_token": 0, "run_km": 0, "walk_km": 0, "other_exercise_hours": 0, "token_per_active_member": 0.0, "run_km_per_active_member": 0.0, "walk_km_per_active_member": 0.0, "other_hours_per_active_member": 0.0, "team_status_note": "Joined Q2"}, {"month": "2026-01", "quarter": "Q1", "team": "ITSystem", "team_registered_members": 15, "active_members": 8, "activity_count": 50, "net_token": 273.8, "run_km": 158.2, "walk_km": 84.26, "other_exercise_hours": 0.0, "token_per_active_member": 34.22, "run_km_per_active_member": 19.77, "walk_km_per_active_member": 10.53, "other_hours_per_active_member": 0.0, "team_status_note": "Active"}, {"month": "2026-02", "quarter": "Q1", "team": "Mandalorian", "team_registered_members": 14, "active_members": 8, "activity_count": 38, "net_token": 262.2, "run_km": 187.66, "walk_km": 36.86, "other_exercise_hours": 0.0, "token_per_active_member": 32.78, "run_km_per_active_member": 23.46, "walk_km_per_active_member": 4.61, "other_hours_per_active_member": 0.0, "team_status_note": "Active"}, {"month": "2026-02", "quarter": "Q1", "team": "ITSec", "team_registered_members": 7, "active_members": 0, "activity_count": 0, "net_token": 0, "run_km": 0, "walk_km": 0, "other_exercise_hours": 0, "token_per_active_member": 0.0, "run_km_per_active_member": 0.0, "walk_km_per_active_member": 0.0, "other_hours_per_active_member": 0.0, "team_status_note": "Joined Q2"}, {"month": "2026-02", "quarter": "Q1", "team": "ITSystem", "team_registered_members": 15, "active_members": 8, "activity_count": 55, "net_token": 314.3, "run_km": 187.31, "walk_km": 89.51, "other_exercise_hours": 0.0, "token_per_active_member": 39.29, "run_km_per_active_member": 23.41, "walk_km_per_active_member": 11.19, "other_hours_per_active_member": 0.0, "team_status_note": "Active"}, {"month": "2026-03", "quarter": "Q1", "team": "Mandalorian", "team_registered_members": 14, "active_members": 8, "activity_count": 70, "net_token": 413.0, "run_km": 254.73, "walk_km": 107.78, "other_exercise_hours": 0.0, "token_per_active_member": 51.62, "run_km_per_active_member": 31.84, "walk_km_per_active_member": 13.47, "other_hours_per_active_member": 0.0, "team_status_note": "Active"}, {"month": "2026-03", "quarter": "Q1", "team": "ITSec", "team_registered_members": 7, "active_members": 0, "activity_count": 0, "net_token": 0, "run_km": 0, "walk_km": 0, "other_exercise_hours": 0, "token_per_active_member": 0.0, "run_km_per_active_member": 0.0, "walk_km_per_active_member": 0.0, "other_hours_per_active_member": 0.0, "team_status_note": "Joined Q2"}, {"month": "2026-03", "quarter": "Q1", "team": "ITSystem", "team_registered_members": 15, "active_members": 8, "activity_count": 47, "net_token": 390.9, "run_km": 206.25, "walk_km": 143.37, "other_exercise_hours": 0.0, "token_per_active_member": 48.86, "run_km_per_active_member": 25.78, "walk_km_per_active_member": 17.92, "other_hours_per_active_member": 0.0, "team_status_note": "Active"}, {"month": "2026-04", "quarter": "Q2", "team": "Mandalorian", "team_registered_members": 14, "active_members": 10, "activity_count": 127, "net_token": 838.3, "run_km": 344.17, "walk_km": 99.36, "other_exercise_hours": 83.2, "token_per_active_member": 83.83, "run_km_per_active_member": 34.42, "walk_km_per_active_member": 9.94, "other_hours_per_active_member": 8.32, "team_status_note": "Active"}, {"month": "2026-04", "quarter": "Q2", "team": "ITSec", "team_registered_members": 7, "active_members": 4, "activity_count": 60, "net_token": 223.1, "run_km": 41.88, "walk_km": 69.79, "other_exercise_hours": 27.99, "token_per_active_member": 55.78, "run_km_per_active_member": 10.47, "walk_km_per_active_member": 17.45, "other_hours_per_active_member": 7.0, "team_status_note": "Active"}, {"month": "2026-04", "quarter": "Q2", "team": "ITSystem", "team_registered_members": 15, "active_members": 10, "activity_count": 125, "net_token": 699.3, "run_km": 342.72, "walk_km": 270.22, "other_exercise_hours": 4.41, "token_per_active_member": 69.93, "run_km_per_active_member": 34.27, "walk_km_per_active_member": 27.02, "other_hours_per_active_member": 0.44, "team_status_note": "Active"}, {"month": "2026-05", "quarter": "Q2", "team": "Mandalorian", "team_registered_members": 14, "active_members": 11, "activity_count": 147, "net_token": 987.7, "run_km": 430.72, "walk_km": 108.5, "other_exercise_hours": 98.1, "token_per_active_member": 89.79, "run_km_per_active_member": 39.16, "walk_km_per_active_member": 9.86, "other_hours_per_active_member": 8.92, "team_status_note": "Active"}, {"month": "2026-05", "quarter": "Q2", "team": "ITSec", "team_registered_members": 7, "active_members": 4, "activity_count": 104, "net_token": 447.1, "run_km": 74.59, "walk_km": 176.84, "other_exercise_hours": 50.41, "token_per_active_member": 111.77, "run_km_per_active_member": 18.65, "walk_km_per_active_member": 44.21, "other_hours_per_active_member": 12.6, "team_status_note": "Active"}, {"month": "2026-05", "quarter": "Q2", "team": "ITSystem", "team_registered_members": 15, "active_members": 10, "activity_count": 165, "net_token": 794.8, "run_km": 472.15, "walk_km": 164.82, "other_exercise_hours": 17.48, "token_per_active_member": 79.48, "run_km_per_active_member": 47.21, "walk_km_per_active_member": 16.48, "other_hours_per_active_member": 1.75, "team_status_note": "Active"}, {"month": "2026-06", "quarter": "Q2", "team": "Mandalorian", "team_registered_members": 14, "active_members": 11, "activity_count": 159, "net_token": 923.0, "run_km": 427.51, "walk_km": 112.44, "other_exercise_hours": 82.83, "token_per_active_member": 83.91, "run_km_per_active_member": 38.86, "walk_km_per_active_member": 10.22, "other_hours_per_active_member": 7.53, "team_status_note": "Active"}, {"month": "2026-06", "quarter": "Q2", "team": "ITSec", "team_registered_members": 7, "active_members": 4, "activity_count": 105, "net_token": 427.6, "run_km": 55.65, "walk_km": 179.26, "other_exercise_hours": 50.51, "token_per_active_member": 106.9, "run_km_per_active_member": 13.91, "walk_km_per_active_member": 44.82, "other_hours_per_active_member": 12.63, "team_status_note": "Active"}, {"month": "2026-06", "quarter": "Q2", "team": "ITSystem", "team_registered_members": 15, "active_members": 8, "activity_count": 124, "net_token": 653.5, "run_km": 391.29, "walk_km": 97.77, "other_exercise_hours": 23.55, "token_per_active_member": 81.69, "run_km_per_active_member": 48.91, "walk_km_per_active_member": 12.22, "other_hours_per_active_member": 2.94, "team_status_note": "Active"}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "team_registered_members": 14, "active_members": 13, "activity_count": 246, "net_token": 1933.4, "run_km": 780.98, "walk_km": 164.79, "other_exercise_hours": 111.66, "token_per_active_member": 148.72, "run_km_per_active_member": 60.08, "walk_km_per_active_member": 12.68, "other_hours_per_active_member": 8.59, "team_status_note": "Active"}, {"month": "2026-07", "quarter": "Q3", "team": "ITSec", "team_registered_members": 7, "active_members": 7, "activity_count": 200, "net_token": 1260.6, "run_km": 367.24, "walk_km": 244.03, "other_exercise_hours": 105.35, "token_per_active_member": 180.09, "run_km_per_active_member": 52.46, "walk_km_per_active_member": 34.86, "other_hours_per_active_member": 15.05, "team_status_note": "Active"}, {"month": "2026-07", "quarter": "Q3", "team": "ITSystem", "team_registered_members": 15, "active_members": 11, "activity_count": 178, "net_token": 1350.0, "run_km": 726.6, "walk_km": 106.94, "other_exercise_hours": 31.36, "token_per_active_member": 122.73, "run_km_per_active_member": 66.05, "walk_km_per_active_member": 9.72, "other_hours_per_active_member": 2.85, "team_status_note": "Active"}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "team_registered_members": 14, "active_members": 13, "activity_count": 253, "net_token": 1918.3, "run_km": 854.74, "walk_km": 210.86, "other_exercise_hours": 119.84, "token_per_active_member": 147.56, "run_km_per_active_member": 65.75, "walk_km_per_active_member": 16.22, "other_hours_per_active_member": 9.22, "team_status_note": "Active"}, {"month": "2026-08", "quarter": "Q3", "team": "ITSec", "team_registered_members": 7, "active_members": 7, "activity_count": 189, "net_token": 1207.3, "run_km": 405.72, "walk_km": 210.73, "other_exercise_hours": 104.7, "token_per_active_member": 172.47, "run_km_per_active_member": 57.96, "walk_km_per_active_member": 30.1, "other_hours_per_active_member": 14.96, "team_status_note": "Active"}, {"month": "2026-08", "quarter": "Q3", "team": "ITSystem", "team_registered_members": 15, "active_members": 11, "activity_count": 156, "net_token": 1194.8, "run_km": 631.23, "walk_km": 96.06, "other_exercise_hours": 57.64, "token_per_active_member": 108.62, "run_km_per_active_member": 57.38, "walk_km_per_active_member": 8.73, "other_hours_per_active_member": 5.24, "team_status_note": "Active"}, {"month": "2026-09", "quarter": "Q3", "team": "Mandalorian", "team_registered_members": 14, "active_members": 12, "activity_count": 157, "net_token": 1517.6, "run_km": 580.97, "walk_km": 99.18, "other_exercise_hours": 98.59, "token_per_active_member": 126.47, "run_km_per_active_member": 48.41, "walk_km_per_active_member": 8.26, "other_hours_per_active_member": 8.22, "team_status_note": "Active"}, {"month": "2026-09", "quarter": "Q3", "team": "ITSec", "team_registered_members": 7, "active_members": 7, "activity_count": 129, "net_token": 1031.4, "run_km": 311.25, "walk_km": 80.35, "other_exercise_hours": 83.6, "token_per_active_member": 147.34, "run_km_per_active_member": 44.46, "walk_km_per_active_member": 11.48, "other_hours_per_active_member": 11.94, "team_status_note": "Active"}, {"month": "2026-09", "quarter": "Q3", "team": "ITSystem", "team_registered_members": 15, "active_members": 8, "activity_count": 66, "net_token": 438.7, "run_km": 205.28, "walk_km": 32.9, "other_exercise_hours": 35.14, "token_per_active_member": 54.84, "run_km_per_active_member": 25.66, "walk_km_per_active_member": 4.11, "other_hours_per_active_member": 4.39, "team_status_note": "Active"}, {"month": "2026-10", "quarter": "Q4", "team": "Mandalorian", "team_registered_members": 14, "active_members": 11, "activity_count": 133, "net_token": 1023.2, "run_km": 484.63, "walk_km": 73.09, "other_exercise_hours": 80.83, "token_per_active_member": 93.02, "run_km_per_active_member": 44.06, "walk_km_per_active_member": 6.64, "other_hours_per_active_member": 7.35, "team_status_note": "Active"}, {"month": "2026-10", "quarter": "Q4", "team": "ITSec", "team_registered_members": 7, "active_members": 7, "activity_count": 127, "net_token": 956.0, "run_km": 482.02, "walk_km": 69.21, "other_exercise_hours": 67.26, "token_per_active_member": 136.57, "run_km_per_active_member": 68.86, "walk_km_per_active_member": 9.89, "other_hours_per_active_member": 9.61, "team_status_note": "Active"}, {"month": "2026-10", "quarter": "Q4", "team": "ITSystem", "team_registered_members": 15, "active_members": 5, "activity_count": 35, "net_token": 239.4, "run_km": 143.4, "walk_km": 10.89, "other_exercise_hours": 13.53, "token_per_active_member": 47.88, "run_km_per_active_member": 28.68, "walk_km_per_active_member": 2.18, "other_hours_per_active_member": 2.71, "team_status_note": "Active"}, {"month": "2026-11", "quarter": "Q4", "team": "Mandalorian", "team_registered_members": 14, "active_members": 9, "activity_count": 58, "net_token": 474.0, "run_km": 248.91, "walk_km": 22.03, "other_exercise_hours": 36.49, "token_per_active_member": 52.67, "run_km_per_active_member": 27.66, "walk_km_per_active_member": 2.45, "other_hours_per_active_member": 4.05, "team_status_note": "Active"}, {"month": "2026-11", "quarter": "Q4", "team": "ITSec", "team_registered_members": 7, "active_members": 6, "activity_count": 66, "net_token": 468.8, "run_km": 243.15, "walk_km": 22.13, "other_exercise_hours": 36.36, "token_per_active_member": 78.13, "run_km_per_active_member": 40.52, "walk_km_per_active_member": 3.69, "other_hours_per_active_member": 6.06, "team_status_note": "Active"}, {"month": "2026-11", "quarter": "Q4", "team": "ITSystem", "team_registered_members": 15, "active_members": 6, "activity_count": 21, "net_token": 201.9, "run_km": 149.4, "walk_km": 3.2, "other_exercise_hours": 4.65, "token_per_active_member": 33.65, "run_km_per_active_member": 24.9, "walk_km_per_active_member": 0.53, "other_hours_per_active_member": 0.78, "team_status_note": "Active"}], "team_annual_fairness": [{"team": "Mandalorian", "registered_members": 14, "active_months": 11, "avg_active_members_per_month": 10.36, "activity_count": 1430, "net_token": 10540.5, "run_km": 4743.22, "walk_km": 1107.26, "other_exercise_hours": 711.56, "token_per_registered_member": 752.89, "run_km_per_registered_member": 338.8, "walk_km_per_registered_member": 79.09, "other_hours_per_registered_member": 50.83, "token_per_active_member_month": 92.46, "run_km_per_active_member_month": 41.61, "walk_km_per_active_member_month": 9.71, "other_hours_per_active_member_month": 6.24, "note": "Full Year (Jan start)"}, {"team": "ITSec", "registered_members": 7, "active_months": 8, "avg_active_members_per_month": 5.75, "activity_count": 980, "net_token": 6021.9, "run_km": 1981.5, "walk_km": 1052.34, "other_exercise_hours": 526.17, "token_per_registered_member": 860.27, "run_km_per_registered_member": 283.07, "walk_km_per_registered_member": 150.33, "other_hours_per_registered_member": 75.17, "token_per_active_member_month": 130.91, "run_km_per_active_member_month": 43.08, "walk_km_per_active_member_month": 22.88, "other_hours_per_active_member_month": 11.44, "note": "Joined Q2 (Apr start)"}, {"team": "ITSystem", "registered_members": 15, "active_months": 11, "avg_active_members_per_month": 8.45, "activity_count": 1022, "net_token": 6551.4, "run_km": 3613.83, "walk_km": 1099.94, "other_exercise_hours": 187.75, "token_per_registered_member": 436.76, "run_km_per_registered_member": 240.92, "walk_km_per_registered_member": 73.33, "other_hours_per_registered_member": 12.52, "token_per_active_member_month": 70.45, "run_km_per_active_member_month": 38.86, "walk_km_per_active_member_month": 11.83, "other_hours_per_active_member_month": 2.02, "note": "Full Year (Jan start)"}], "member_contributions_36": [{"team": "ITSec", "name": "A", "active_months": 5, "first_active_month": "2026-07", "last_active_month": "2026-11", "peak_month": "2026-10", "peak_month_token": 386.6, "primary_pillar": "Run", "activity_count": 131, "net_token": 1434.6, "run_km": 989.4, "walk_km": 141.39, "other_exercise_hours": 2.41, "team_token_share_pct": 23.82, "team_run_share_pct": 49.93, "team_walk_share_pct": 13.44, "team_other_hours_share_pct": 0.46, "club_token_share_pct": 6.21}, {"team": "ITSec", "name": "Bell", "active_months": 8, "first_active_month": "2026-04", "last_active_month": "2026-11", "peak_month": "2026-09", "peak_month_token": 392.6, "primary_pillar": "Hybrid", "activity_count": 229, "net_token": 1809.2, "run_km": 517.81, "walk_km": 236.95, "other_exercise_hours": 215.61, "team_token_share_pct": 30.04, "team_run_share_pct": 26.13, "team_walk_share_pct": 22.52, "team_other_hours_share_pct": 40.98, "club_token_share_pct": 7.83}, {"team": "ITSec", "name": "Jo", "active_months": 8, "first_active_month": "2026-04", "last_active_month": "2026-11", "peak_month": "2026-07", "peak_month_token": 137.8, "primary_pillar": "Hybrid", "activity_count": 100, "net_token": 616.3, "run_km": 104.54, "walk_km": 197.85, "other_exercise_hours": 46.19, "team_token_share_pct": 10.23, "team_run_share_pct": 5.28, "team_walk_share_pct": 18.8, "team_other_hours_share_pct": 8.78, "club_token_share_pct": 2.67}, {"team": "ITSec", "name": "Mo", "active_months": 5, "first_active_month": "2026-07", "last_active_month": "2026-11", "peak_month": "2026-08", "peak_month_token": 107.6, "primary_pillar": "Other", "activity_count": 69, "net_token": 406.6, "run_km": 112.94, "walk_km": 3.37, "other_exercise_hours": 60.64, "team_token_share_pct": 6.75, "team_run_share_pct": 5.7, "team_walk_share_pct": 0.32, "team_other_hours_share_pct": 11.53, "club_token_share_pct": 1.76}, {"team": "ITSec", "name": "Moe", "active_months": 8, "first_active_month": "2026-04", "last_active_month": "2026-11", "peak_month": "2026-07", "peak_month_token": 174.7, "primary_pillar": "Hybrid", "activity_count": 310, "net_token": 946.5, "run_km": 13.15, "walk_km": 412.92, "other_exercise_hours": 125.81, "team_token_share_pct": 15.72, "team_run_share_pct": 0.66, "team_walk_share_pct": 39.24, "team_other_hours_share_pct": 23.91, "club_token_share_pct": 4.09}, {"team": "ITSec", "name": "pae", "active_months": 4, "first_active_month": "2026-07", "last_active_month": "2026-10", "peak_month": "2026-08", "peak_month_token": 155.4, "primary_pillar": "Other", "activity_count": 43, "net_token": 364.2, "run_km": 35.68, "walk_km": 0.0, "other_exercise_hours": 51.61, "team_token_share_pct": 6.05, "team_run_share_pct": 1.8, "team_walk_share_pct": 0.0, "team_other_hours_share_pct": 9.81, "club_token_share_pct": 1.58}, {"team": "ITSec", "name": "PuiFai", "active_months": 8, "first_active_month": "2026-04", "last_active_month": "2026-11", "peak_month": "2026-07", "peak_month_token": 125.9, "primary_pillar": "Run", "activity_count": 98, "net_token": 444.5, "run_km": 207.98, "walk_km": 59.86, "other_exercise_hours": 23.91, "team_token_share_pct": 7.38, "team_run_share_pct": 10.5, "team_walk_share_pct": 5.69, "team_other_hours_share_pct": 4.54, "club_token_share_pct": 1.92}, {"team": "ITSystem", "name": "AA", "active_months": 2, "first_active_month": "2026-07", "last_active_month": "2026-08", "peak_month": "2026-08", "peak_month_token": 117.2, "primary_pillar": "Run", "activity_count": 14, "net_token": 207.9, "run_km": 116.14, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_token_share_pct": 3.17, "team_run_share_pct": 3.21, "team_walk_share_pct": 0.0, "team_other_hours_share_pct": 0.0, "club_token_share_pct": 0.9}, {"team": "ITSystem", "name": "AKPONG", "active_months": 5, "first_active_month": "2026-07", "last_active_month": "2026-11", "peak_month": "2026-09", "peak_month_token": 51.9, "primary_pillar": "Other", "activity_count": 36, "net_token": 173.7, "run_km": 9.12, "walk_km": 0.0, "other_exercise_hours": 35.89, "team_token_share_pct": 2.65, "team_run_share_pct": 0.25, "team_walk_share_pct": 0.0, "team_other_hours_share_pct": 19.12, "club_token_share_pct": 0.75}, {"team": "ITSystem", "name": "Boy", "active_months": 6, "first_active_month": "2026-01", "last_active_month": "2026-06", "peak_month": "2026-04", "peak_month_token": 168.9, "primary_pillar": "Run", "activity_count": 68, "net_token": 675.9, "run_km": 563.48, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_token_share_pct": 10.32, "team_run_share_pct": 15.59, "team_walk_share_pct": 0.0, "team_other_hours_share_pct": 0.0, "club_token_share_pct": 2.92}, {"team": "ITSystem", "name": "CHAT", "active_months": 5, "first_active_month": "2026-07", "last_active_month": "2026-11", "peak_month": "2026-07", "peak_month_token": 137.0, "primary_pillar": "Run", "activity_count": 37, "net_token": 433.0, "run_km": 361.11, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_token_share_pct": 6.61, "team_run_share_pct": 9.99, "team_walk_share_pct": 0.0, "team_other_hours_share_pct": 0.0, "club_token_share_pct": 1.87}, {"team": "ITSystem", "name": "Game", "active_months": 8, "first_active_month": "2026-01", "last_active_month": "2026-09", "peak_month": "2026-07", "peak_month_token": 143.4, "primary_pillar": "Run", "activity_count": 78, "net_token": 496.5, "run_km": 265.8, "walk_km": 4.15, "other_exercise_hours": 34.12, "team_token_share_pct": 7.58, "team_run_share_pct": 7.36, "team_walk_share_pct": 0.38, "team_other_hours_share_pct": 18.17, "club_token_share_pct": 2.15}, {"team": "ITSystem", "name": "Jojo", "active_months": 11, "first_active_month": "2026-01", "last_active_month": "2026-11", "peak_month": "2026-08", "peak_month_token": 148.3, "primary_pillar": "Run", "activity_count": 179, "net_token": 1145.1, "run_km": 584.62, "walk_km": 426.87, "other_exercise_hours": 4.21, "team_token_share_pct": 17.48, "team_run_share_pct": 16.18, "team_walk_share_pct": 38.81, "team_other_hours_share_pct": 2.24, "club_token_share_pct": 4.95}, {"team": "ITSystem", "name": "NOI", "active_months": 5, "first_active_month": "2026-07", "last_active_month": "2026-11", "peak_month": "2026-08", "peak_month_token": 89.5, "primary_pillar": "Other", "activity_count": 43, "net_token": 248.8, "run_km": 9.66, "walk_km": 3.01, "other_exercise_hours": 41.29, "team_token_share_pct": 3.8, "team_run_share_pct": 0.27, "team_walk_share_pct": 0.27, "team_other_hours_share_pct": 21.99, "club_token_share_pct": 1.08}, {"team": "ITSystem", "name": "O", "active_months": 11, "first_active_month": "2026-01", "last_active_month": "2026-11", "peak_month": "2026-07", "peak_month_token": 80.3, "primary_pillar": "Run", "activity_count": 74, "net_token": 576.9, "run_km": 473.83, "walk_km": 4.2, "other_exercise_hours": 0.0, "team_token_share_pct": 8.81, "team_run_share_pct": 13.11, "team_walk_share_pct": 0.38, "team_other_hours_share_pct": 0.0, "club_token_share_pct": 2.5}, {"team": "ITSystem", "name": "Oat", "active_months": 9, "first_active_month": "2026-01", "last_active_month": "2026-09", "peak_month": "2026-08", "peak_month_token": 317.0, "primary_pillar": "Run", "activity_count": 182, "net_token": 1157.6, "run_km": 633.42, "walk_km": 75.74, "other_exercise_hours": 67.37, "team_token_share_pct": 17.67, "team_run_share_pct": 17.53, "team_walk_share_pct": 6.89, "team_other_hours_share_pct": 35.88, "club_token_share_pct": 5.01}, {"team": "ITSystem", "name": "Oum", "active_months": 9, "first_active_month": "2026-01", "last_active_month": "2026-09", "peak_month": "2026-05", "peak_month_token": 138.7, "primary_pillar": "Walk", "activity_count": 124, "net_token": 545.8, "run_km": 173.46, "walk_km": 258.88, "other_exercise_hours": 1.0, "team_token_share_pct": 8.33, "team_run_share_pct": 4.8, "team_walk_share_pct": 23.54, "team_other_hours_share_pct": 0.53, "club_token_share_pct": 2.36}, {"team": "ITSystem", "name": "Palm", "active_months": 5, "first_active_month": "2026-01", "last_active_month": "2026-05", "peak_month": "2026-04", "peak_month_token": 62.7, "primary_pillar": "Run", "activity_count": 39, "net_token": 188.7, "run_km": 98.74, "walk_km": 70.36, "other_exercise_hours": 0.0, "team_token_share_pct": 2.88, "team_run_share_pct": 2.73, "team_walk_share_pct": 6.4, "team_other_hours_share_pct": 0.0, "club_token_share_pct": 0.82}, {"team": "ITSystem", "name": "PAN", "active_months": 4, "first_active_month": "2026-02", "last_active_month": "2026-06", "peak_month": "2026-04", "peak_month_token": 96.0, "primary_pillar": "Walk", "activity_count": 28, "net_token": 115.2, "run_km": 0.0, "walk_km": 115.41, "other_exercise_hours": 0.0, "team_token_share_pct": 1.76, "team_run_share_pct": 0.0, "team_walk_share_pct": 10.49, "team_other_hours_share_pct": 0.0, "club_token_share_pct": 0.5}, {"team": "ITSystem", "name": "PP", "active_months": 3, "first_active_month": "2026-07", "last_active_month": "2026-11", "peak_month": "2026-07", "peak_month_token": 226.5, "primary_pillar": "Run", "activity_count": 39, "net_token": 297.4, "run_km": 212.17, "walk_km": 3.01, "other_exercise_hours": 0.0, "team_token_share_pct": 4.54, "team_run_share_pct": 5.87, "team_walk_share_pct": 0.27, "team_other_hours_share_pct": 0.0, "club_token_share_pct": 1.29}, {"team": "ITSystem", "name": "tae", "active_months": 4, "first_active_month": "2026-04", "last_active_month": "2026-08", "peak_month": "2026-04", "peak_month_token": 93.4, "primary_pillar": "Walk", "activity_count": 29, "net_token": 144.8, "run_km": 4.12, "walk_km": 138.31, "other_exercise_hours": 0.0, "team_token_share_pct": 2.21, "team_run_share_pct": 0.11, "team_walk_share_pct": 12.57, "team_other_hours_share_pct": 0.0, "club_token_share_pct": 0.63}, {"team": "ITSystem", "name": "ton", "active_months": 6, "first_active_month": "2026-01", "last_active_month": "2026-06", "peak_month": "2026-05", "peak_month_token": 43.9, "primary_pillar": "Run", "activity_count": 52, "net_token": 144.1, "run_km": 108.16, "walk_km": 0.0, "other_exercise_hours": 3.86, "team_token_share_pct": 2.2, "team_run_share_pct": 2.99, "team_walk_share_pct": 0.0, "team_other_hours_share_pct": 2.06, "club_token_share_pct": 0.62}, {"team": "Mandalorian", "name": "Big", "active_months": 7, "first_active_month": "2026-04", "last_active_month": "2026-10", "peak_month": "2026-09", "peak_month_token": 133.6, "primary_pillar": "Hybrid", "activity_count": 102, "net_token": 572.4, "run_km": 152.97, "walk_km": 108.18, "other_exercise_hours": 28.4, "team_token_share_pct": 5.43, "team_run_share_pct": 3.23, "team_walk_share_pct": 9.77, "team_other_hours_share_pct": 3.99, "club_token_share_pct": 2.48}, {"team": "Mandalorian", "name": "Boat", "active_months": 11, "first_active_month": "2026-01", "last_active_month": "2026-11", "peak_month": "2026-07", "peak_month_token": 129.3, "primary_pillar": "Run", "activity_count": 86, "net_token": 657.0, "run_km": 518.69, "walk_km": 10.23, "other_exercise_hours": 5.68, "team_token_share_pct": 6.23, "team_run_share_pct": 10.94, "team_walk_share_pct": 0.92, "team_other_hours_share_pct": 0.8, "club_token_share_pct": 2.84}, {"team": "Mandalorian", "name": "CHAN", "active_months": 11, "first_active_month": "2026-01", "last_active_month": "2026-11", "peak_month": "2026-07", "peak_month_token": 123.9, "primary_pillar": "Walk", "activity_count": 74, "net_token": 429.7, "run_km": 31.23, "walk_km": 330.26, "other_exercise_hours": 4.64, "team_token_share_pct": 4.08, "team_run_share_pct": 0.66, "team_walk_share_pct": 29.83, "team_other_hours_share_pct": 0.65, "club_token_share_pct": 1.86}, {"team": "Mandalorian", "name": "EM", "active_months": 11, "first_active_month": "2026-01", "last_active_month": "2026-11", "peak_month": "2026-07", "peak_month_token": 97.8, "primary_pillar": "Run", "activity_count": 68, "net_token": 509.5, "run_km": 318.68, "walk_km": 21.42, "other_exercise_hours": 11.12, "team_token_share_pct": 4.83, "team_run_share_pct": 6.72, "team_walk_share_pct": 1.93, "team_other_hours_share_pct": 1.56, "club_token_share_pct": 2.2}, {"team": "Mandalorian", "name": "FRANK", "active_months": 4, "first_active_month": "2026-07", "last_active_month": "2026-11", "peak_month": "2026-08", "peak_month_token": 206.9, "primary_pillar": "Run", "activity_count": 35, "net_token": 363.8, "run_km": 156.12, "walk_km": 0.0, "other_exercise_hours": 19.75, "team_token_share_pct": 3.45, "team_run_share_pct": 3.29, "team_walk_share_pct": 0.0, "team_other_hours_share_pct": 2.78, "club_token_share_pct": 1.57}, {"team": "Mandalorian", "name": "Fuse", "active_months": 6, "first_active_month": "2026-01", "last_active_month": "2026-06", "peak_month": "2026-04", "peak_month_token": 88.3, "primary_pillar": "Hybrid", "activity_count": 30, "net_token": 226.0, "run_km": 73.32, "walk_km": 57.3, "other_exercise_hours": 12.68, "team_token_share_pct": 2.14, "team_run_share_pct": 1.55, "team_walk_share_pct": 5.17, "team_other_hours_share_pct": 1.78, "club_token_share_pct": 0.98}, {"team": "Mandalorian", "name": "GIO", "active_months": 11, "first_active_month": "2026-01", "last_active_month": "2026-11", "peak_month": "2026-08", "peak_month_token": 319.7, "primary_pillar": "Run", "activity_count": 357, "net_token": 2591.6, "run_km": 1615.47, "walk_km": 218.44, "other_exercise_hours": 95.33, "team_token_share_pct": 24.59, "team_run_share_pct": 34.06, "team_walk_share_pct": 19.73, "team_other_hours_share_pct": 13.4, "club_token_share_pct": 11.21}, {"team": "Mandalorian", "name": "Mos", "active_months": 11, "first_active_month": "2026-01", "last_active_month": "2026-11", "peak_month": "2026-08", "peak_month_token": 81.0, "primary_pillar": "Other", "activity_count": 61, "net_token": 382.9, "run_km": 30.4, "walk_km": 73.11, "other_exercise_hours": 51.55, "team_token_share_pct": 3.63, "team_run_share_pct": 0.64, "team_walk_share_pct": 6.6, "team_other_hours_share_pct": 7.24, "club_token_share_pct": 1.66}, {"team": "Mandalorian", "name": "Neung", "active_months": 7, "first_active_month": "2026-05", "last_active_month": "2026-11", "peak_month": "2026-08", "peak_month_token": 58.0, "primary_pillar": "Other", "activity_count": 55, "net_token": 207.6, "run_km": 4.38, "walk_km": 55.76, "other_exercise_hours": 32.35, "team_token_share_pct": 1.97, "team_run_share_pct": 0.09, "team_walk_share_pct": 5.04, "team_other_hours_share_pct": 4.55, "club_token_share_pct": 0.9}, {"team": "Mandalorian", "name": "PECK", "active_months": 8, "first_active_month": "2026-04", "last_active_month": "2026-11", "peak_month": "2026-09", "peak_month_token": 247.9, "primary_pillar": "Other", "activity_count": 136, "net_token": 1328.2, "run_km": 76.78, "walk_km": 0.0, "other_exercise_hours": 290.95, "team_token_share_pct": 12.6, "team_run_share_pct": 1.62, "team_walk_share_pct": 0.0, "team_other_hours_share_pct": 40.89, "club_token_share_pct": 5.75}, {"team": "Mandalorian", "name": "SAND", "active_months": 10, "first_active_month": "2026-01", "last_active_month": "2026-10", "peak_month": "2026-06", "peak_month_token": 113.6, "primary_pillar": "Run", "activity_count": 113, "net_token": 657.1, "run_km": 377.82, "walk_km": 125.18, "other_exercise_hours": 3.37, "team_token_share_pct": 6.23, "team_run_share_pct": 7.97, "team_walk_share_pct": 11.31, "team_other_hours_share_pct": 0.47, "club_token_share_pct": 2.84}, {"team": "Mandalorian", "name": "TER", "active_months": 4, "first_active_month": "2026-07", "last_active_month": "2026-10", "peak_month": "2026-09", "peak_month_token": 373.6, "primary_pillar": "Run", "activity_count": 81, "net_token": 1083.8, "run_km": 792.66, "walk_km": 18.01, "other_exercise_hours": 0.0, "team_token_share_pct": 10.28, "team_run_share_pct": 16.71, "team_walk_share_pct": 1.63, "team_other_hours_share_pct": 0.0, "club_token_share_pct": 4.69}, {"team": "Mandalorian", "name": "ToRo", "active_months": 11, "first_active_month": "2026-01", "last_active_month": "2026-11", "peak_month": "2026-07", "peak_month_token": 288.0, "primary_pillar": "Hybrid", "activity_count": 205, "net_token": 1435.7, "run_km": 564.18, "walk_km": 41.13, "other_exercise_hours": 155.74, "team_token_share_pct": 13.62, "team_run_share_pct": 11.89, "team_walk_share_pct": 3.71, "team_other_hours_share_pct": 21.89, "club_token_share_pct": 6.21}, {"team": "Mandalorian", "name": "Yu", "active_months": 2, "first_active_month": "2026-07", "last_active_month": "2026-08", "peak_month": "2026-07", "peak_month_token": 55.7, "primary_pillar": "Walk", "activity_count": 27, "net_token": 95.2, "run_km": 30.52, "walk_km": 48.24, "other_exercise_hours": 0.0, "team_token_share_pct": 0.9, "team_run_share_pct": 0.64, "team_walk_share_pct": 4.36, "team_other_hours_share_pct": 0.0, "club_token_share_pct": 0.41}], "athlete_monthly": [{"month": "2026-01", "quarter": "Q1", "team": "ITSystem", "name": "Boy", "activity_count": 5, "net_token": 32.4, "run_km": 27.02, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 11.83}, {"month": "2026-01", "quarter": "Q1", "team": "ITSystem", "name": "Game", "activity_count": 4, "net_token": 27.1, "run_km": 22.63, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 9.9}, {"month": "2026-01", "quarter": "Q1", "team": "ITSystem", "name": "Jojo", "activity_count": 15, "net_token": 74.0, "run_km": 0.0, "walk_km": 74.01, "other_exercise_hours": 0.0, "team_month_token_share_pct": 27.03}, {"month": "2026-01", "quarter": "Q1", "team": "ITSystem", "name": "O", "activity_count": 6, "net_token": 42.0, "run_km": 35.09, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 15.34}, {"month": "2026-01", "quarter": "Q1", "team": "ITSystem", "name": "Oat", "activity_count": 5, "net_token": 30.9, "run_km": 21.63, "walk_km": 5.04, "other_exercise_hours": 0.0, "team_month_token_share_pct": 11.29}, {"month": "2026-01", "quarter": "Q1", "team": "ITSystem", "name": "Oum", "activity_count": 3, "net_token": 15.1, "run_km": 8.2, "walk_km": 5.21, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.51}, {"month": "2026-01", "quarter": "Q1", "team": "ITSystem", "name": "Palm", "activity_count": 8, "net_token": 36.0, "run_km": 30.1, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 13.15}, {"month": "2026-01", "quarter": "Q1", "team": "ITSystem", "name": "ton", "activity_count": 4, "net_token": 16.3, "run_km": 13.53, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.95}, {"month": "2026-01", "quarter": "Q1", "team": "Mandalorian", "name": "Boat", "activity_count": 3, "net_token": 20.7, "run_km": 11.2, "walk_km": 7.3, "other_exercise_hours": 0.0, "team_month_token_share_pct": 8.29}, {"month": "2026-01", "quarter": "Q1", "team": "Mandalorian", "name": "CHAN", "activity_count": 3, "net_token": 14.3, "run_km": 0.0, "walk_km": 14.34, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.72}, {"month": "2026-01", "quarter": "Q1", "team": "Mandalorian", "name": "EM", "activity_count": 2, "net_token": 10.1, "run_km": 8.4, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.04}, {"month": "2026-01", "quarter": "Q1", "team": "Mandalorian", "name": "Fuse", "activity_count": 2, "net_token": 19.4, "run_km": 0.0, "walk_km": 19.37, "other_exercise_hours": 0.0, "team_month_token_share_pct": 7.77}, {"month": "2026-01", "quarter": "Q1", "team": "Mandalorian", "name": "GIO", "activity_count": 21, "net_token": 143.6, "run_km": 119.94, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 57.49}, {"month": "2026-01", "quarter": "Q1", "team": "Mandalorian", "name": "Mos", "activity_count": 3, "net_token": 10.7, "run_km": 0.0, "walk_km": 10.7, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.28}, {"month": "2026-01", "quarter": "Q1", "team": "Mandalorian", "name": "SAND", "activity_count": 6, "net_token": 20.6, "run_km": 0.0, "walk_km": 20.66, "other_exercise_hours": 0.0, "team_month_token_share_pct": 8.25}, {"month": "2026-01", "quarter": "Q1", "team": "Mandalorian", "name": "ToRo", "activity_count": 2, "net_token": 10.4, "run_km": 8.66, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.16}, {"month": "2026-02", "quarter": "Q1", "team": "ITSystem", "name": "Boy", "activity_count": 10, "net_token": 78.6, "run_km": 65.44, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 25.01}, {"month": "2026-02", "quarter": "Q1", "team": "ITSystem", "name": "Jojo", "activity_count": 18, "net_token": 93.0, "run_km": 6.41, "walk_km": 85.3, "other_exercise_hours": 0.0, "team_month_token_share_pct": 29.59}, {"month": "2026-02", "quarter": "Q1", "team": "ITSystem", "name": "O", "activity_count": 10, "net_token": 68.9, "run_km": 57.48, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 21.92}, {"month": "2026-02", "quarter": "Q1", "team": "ITSystem", "name": "Oat", "activity_count": 3, "net_token": 20.5, "run_km": 17.1, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 6.52}, {"month": "2026-02", "quarter": "Q1", "team": "ITSystem", "name": "Oum", "activity_count": 1, "net_token": 3.9, "run_km": 3.29, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 1.24}, {"month": "2026-02", "quarter": "Q1", "team": "ITSystem", "name": "Palm", "activity_count": 3, "net_token": 17.4, "run_km": 14.52, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.54}, {"month": "2026-02", "quarter": "Q1", "team": "ITSystem", "name": "PAN", "activity_count": 2, "net_token": 4.2, "run_km": 0.0, "walk_km": 4.21, "other_exercise_hours": 0.0, "team_month_token_share_pct": 1.34}, {"month": "2026-02", "quarter": "Q1", "team": "ITSystem", "name": "ton", "activity_count": 8, "net_token": 27.8, "run_km": 23.07, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 8.85}, {"month": "2026-02", "quarter": "Q1", "team": "Mandalorian", "name": "Boat", "activity_count": 4, "net_token": 30.3, "run_km": 25.16, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 11.56}, {"month": "2026-02", "quarter": "Q1", "team": "Mandalorian", "name": "CHAN", "activity_count": 3, "net_token": 11.1, "run_km": 3.38, "walk_km": 6.97, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.23}, {"month": "2026-02", "quarter": "Q1", "team": "Mandalorian", "name": "EM", "activity_count": 1, "net_token": 11.6, "run_km": 9.66, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.42}, {"month": "2026-02", "quarter": "Q1", "team": "Mandalorian", "name": "Fuse", "activity_count": 1, "net_token": 7.4, "run_km": 0.0, "walk_km": 7.38, "other_exercise_hours": 0.0, "team_month_token_share_pct": 2.82}, {"month": "2026-02", "quarter": "Q1", "team": "Mandalorian", "name": "GIO", "activity_count": 19, "net_token": 174.1, "run_km": 145.12, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 66.4}, {"month": "2026-02", "quarter": "Q1", "team": "Mandalorian", "name": "Mos", "activity_count": 2, "net_token": 4.9, "run_km": 0.0, "walk_km": 4.85, "other_exercise_hours": 0.0, "team_month_token_share_pct": 1.87}, {"month": "2026-02", "quarter": "Q1", "team": "Mandalorian", "name": "SAND", "activity_count": 7, "net_token": 17.6, "run_km": 0.0, "walk_km": 17.66, "other_exercise_hours": 0.0, "team_month_token_share_pct": 6.71}, {"month": "2026-02", "quarter": "Q1", "team": "Mandalorian", "name": "ToRo", "activity_count": 1, "net_token": 5.2, "run_km": 4.34, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 1.98}, {"month": "2026-03", "quarter": "Q1", "team": "ITSystem", "name": "Boy", "activity_count": 10, "net_token": 98.0, "run_km": 81.64, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 25.07}, {"month": "2026-03", "quarter": "Q1", "team": "ITSystem", "name": "Game", "activity_count": 4, "net_token": 36.2, "run_km": 30.08, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 9.26}, {"month": "2026-03", "quarter": "Q1", "team": "ITSystem", "name": "Jojo", "activity_count": 16, "net_token": 143.3, "run_km": 0.0, "walk_km": 143.37, "other_exercise_hours": 0.0, "team_month_token_share_pct": 36.66}, {"month": "2026-03", "quarter": "Q1", "team": "ITSystem", "name": "O", "activity_count": 4, "net_token": 48.6, "run_km": 40.51, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 12.43}, {"month": "2026-03", "quarter": "Q1", "team": "ITSystem", "name": "Oat", "activity_count": 6, "net_token": 30.6, "run_km": 25.53, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 7.83}, {"month": "2026-03", "quarter": "Q1", "team": "ITSystem", "name": "Oum", "activity_count": 2, "net_token": 11.1, "run_km": 9.23, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 2.84}, {"month": "2026-03", "quarter": "Q1", "team": "ITSystem", "name": "Palm", "activity_count": 4, "net_token": 21.0, "run_km": 17.55, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.37}, {"month": "2026-03", "quarter": "Q1", "team": "ITSystem", "name": "ton", "activity_count": 1, "net_token": 2.1, "run_km": 1.71, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 0.54}, {"month": "2026-03", "quarter": "Q1", "team": "Mandalorian", "name": "Boat", "activity_count": 4, "net_token": 35.4, "run_km": 29.51, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 8.57}, {"month": "2026-03", "quarter": "Q1", "team": "Mandalorian", "name": "CHAN", "activity_count": 3, "net_token": 12.9, "run_km": 0.0, "walk_km": 12.94, "other_exercise_hours": 0.0, "team_month_token_share_pct": 3.12}, {"month": "2026-03", "quarter": "Q1", "team": "Mandalorian", "name": "EM", "activity_count": 5, "net_token": 37.4, "run_km": 31.1, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 9.06}, {"month": "2026-03", "quarter": "Q1", "team": "Mandalorian", "name": "Fuse", "activity_count": 3, "net_token": 18.9, "run_km": 0.0, "walk_km": 18.9, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.58}, {"month": "2026-03", "quarter": "Q1", "team": "Mandalorian", "name": "GIO", "activity_count": 30, "net_token": 213.4, "run_km": 178.04, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 51.67}, {"month": "2026-03", "quarter": "Q1", "team": "Mandalorian", "name": "Mos", "activity_count": 4, "net_token": 9.5, "run_km": 0.0, "walk_km": 9.56, "other_exercise_hours": 0.0, "team_month_token_share_pct": 2.3}, {"month": "2026-03", "quarter": "Q1", "team": "Mandalorian", "name": "SAND", "activity_count": 18, "net_token": 66.3, "run_km": 0.0, "walk_km": 66.38, "other_exercise_hours": 0.0, "team_month_token_share_pct": 16.05}, {"month": "2026-03", "quarter": "Q1", "team": "Mandalorian", "name": "ToRo", "activity_count": 3, "net_token": 19.2, "run_km": 16.08, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.65}, {"month": "2026-04", "quarter": "Q2", "team": "ITSec", "name": "Bell", "activity_count": 12, "net_token": 67.3, "run_km": 4.03, "walk_km": 18.29, "other_exercise_hours": 12.31, "team_month_token_share_pct": 30.17}, {"month": "2026-04", "quarter": "Q2", "team": "ITSec", "name": "Jo", "activity_count": 7, "net_token": 33.1, "run_km": 10.95, "walk_km": 8.25, "other_exercise_hours": 2.59, "team_month_token_share_pct": 14.84}, {"month": "2026-04", "quarter": "Q2", "team": "ITSec", "name": "Moe", "activity_count": 29, "net_token": 73.0, "run_km": 0.0, "walk_km": 43.25, "other_exercise_hours": 8.24, "team_month_token_share_pct": 32.72}, {"month": "2026-04", "quarter": "Q2", "team": "ITSec", "name": "PuiFai", "activity_count": 12, "net_token": 49.7, "run_km": 26.9, "walk_km": 0.0, "other_exercise_hours": 4.84, "team_month_token_share_pct": 22.28}, {"month": "2026-04", "quarter": "Q2", "team": "ITSystem", "name": "Boy", "activity_count": 15, "net_token": 168.9, "run_km": 140.93, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 24.15}, {"month": "2026-04", "quarter": "Q2", "team": "ITSystem", "name": "Game", "activity_count": 10, "net_token": 57.1, "run_km": 41.74, "walk_km": 0.0, "other_exercise_hours": 1.95, "team_month_token_share_pct": 8.17}, {"month": "2026-04", "quarter": "Q2", "team": "ITSystem", "name": "Jojo", "activity_count": 17, "net_token": 115.1, "run_km": 65.31, "walk_km": 36.83, "other_exercise_hours": 0.0, "team_month_token_share_pct": 16.46}, {"month": "2026-04", "quarter": "Q2", "team": "ITSystem", "name": "O", "activity_count": 6, "net_token": 40.4, "run_km": 30.16, "walk_km": 4.2, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.78}, {"month": "2026-04", "quarter": "Q2", "team": "ITSystem", "name": "Oat", "activity_count": 7, "net_token": 32.6, "run_km": 17.98, "walk_km": 4.26, "other_exercise_hours": 1.28, "team_month_token_share_pct": 4.66}, {"month": "2026-04", "quarter": "Q2", "team": "ITSystem", "name": "Oum", "activity_count": 2, "net_token": 5.2, "run_km": 0.0, "walk_km": 5.23, "other_exercise_hours": 0.0, "team_month_token_share_pct": 0.74}, {"month": "2026-04", "quarter": "Q2", "team": "ITSystem", "name": "Palm", "activity_count": 14, "net_token": 62.7, "run_km": 26.99, "walk_km": 30.32, "other_exercise_hours": 0.0, "team_month_token_share_pct": 8.97}, {"month": "2026-04", "quarter": "Q2", "team": "ITSystem", "name": "PAN", "activity_count": 22, "net_token": 96.0, "run_km": 0.0, "walk_km": 96.12, "other_exercise_hours": 0.0, "team_month_token_share_pct": 13.73}, {"month": "2026-04", "quarter": "Q2", "team": "ITSystem", "name": "tae", "activity_count": 20, "net_token": 93.4, "run_km": 0.0, "walk_km": 93.26, "other_exercise_hours": 0.0, "team_month_token_share_pct": 13.36}, {"month": "2026-04", "quarter": "Q2", "team": "ITSystem", "name": "ton", "activity_count": 12, "net_token": 27.9, "run_km": 19.61, "walk_km": 0.0, "other_exercise_hours": 1.19, "team_month_token_share_pct": 3.99}, {"month": "2026-04", "quarter": "Q2", "team": "Mandalorian", "name": "Big", "activity_count": 9, "net_token": 40.2, "run_km": 20.9, "walk_km": 15.17, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.8}, {"month": "2026-04", "quarter": "Q2", "team": "Mandalorian", "name": "Boat", "activity_count": 6, "net_token": 51.5, "run_km": 35.11, "walk_km": 0.0, "other_exercise_hours": 2.63, "team_month_token_share_pct": 6.14}, {"month": "2026-04", "quarter": "Q2", "team": "Mandalorian", "name": "CHAN", "activity_count": 4, "net_token": 16.8, "run_km": 0.0, "walk_km": 16.8, "other_exercise_hours": 0.0, "team_month_token_share_pct": 2.0}, {"month": "2026-04", "quarter": "Q2", "team": "Mandalorian", "name": "EM", "activity_count": 7, "net_token": 45.7, "run_km": 38.09, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.45}, {"month": "2026-04", "quarter": "Q2", "team": "Mandalorian", "name": "Fuse", "activity_count": 10, "net_token": 88.3, "run_km": 20.82, "walk_km": 0.0, "other_exercise_hours": 10.38, "team_month_token_share_pct": 10.53}, {"month": "2026-04", "quarter": "Q2", "team": "Mandalorian", "name": "GIO", "activity_count": 43, "net_token": 254.9, "run_km": 135.71, "walk_km": 63.01, "other_exercise_hours": 8.12, "team_month_token_share_pct": 30.41}, {"month": "2026-04", "quarter": "Q2", "team": "Mandalorian", "name": "Mos", "activity_count": 4, "net_token": 15.0, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 4.2, "team_month_token_share_pct": 1.79}, {"month": "2026-04", "quarter": "Q2", "team": "Mandalorian", "name": "PECK", "activity_count": 16, "net_token": 152.1, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 42.27, "team_month_token_share_pct": 18.14}, {"month": "2026-04", "quarter": "Q2", "team": "Mandalorian", "name": "SAND", "activity_count": 13, "net_token": 99.6, "run_km": 76.09, "walk_km": 4.38, "other_exercise_hours": 1.05, "team_month_token_share_pct": 11.88}, {"month": "2026-04", "quarter": "Q2", "team": "Mandalorian", "name": "ToRo", "activity_count": 15, "net_token": 74.2, "run_km": 17.45, "walk_km": 0.0, "other_exercise_hours": 14.55, "team_month_token_share_pct": 8.85}, {"month": "2026-05", "quarter": "Q2", "team": "ITSec", "name": "Bell", "activity_count": 37, "net_token": 217.8, "run_km": 3.07, "walk_km": 93.23, "other_exercise_hours": 33.66, "team_month_token_share_pct": 48.71}, {"month": "2026-05", "quarter": "Q2", "team": "ITSec", "name": "Jo", "activity_count": 15, "net_token": 61.1, "run_km": 39.32, "walk_km": 14.09, "other_exercise_hours": 0.0, "team_month_token_share_pct": 13.67}, {"month": "2026-05", "quarter": "Q2", "team": "ITSec", "name": "Moe", "activity_count": 30, "net_token": 88.8, "run_km": 3.01, "walk_km": 42.16, "other_exercise_hours": 12.0, "team_month_token_share_pct": 19.86}, {"month": "2026-05", "quarter": "Q2", "team": "ITSec", "name": "PuiFai", "activity_count": 22, "net_token": 79.4, "run_km": 29.19, "walk_km": 27.36, "other_exercise_hours": 4.75, "team_month_token_share_pct": 17.76}, {"month": "2026-05", "quarter": "Q2", "team": "ITSystem", "name": "Boy", "activity_count": 15, "net_token": 155.2, "run_km": 129.38, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 19.53}, {"month": "2026-05", "quarter": "Q2", "team": "ITSystem", "name": "Game", "activity_count": 13, "net_token": 48.9, "run_km": 24.75, "walk_km": 0.0, "other_exercise_hours": 5.37, "team_month_token_share_pct": 6.15}, {"month": "2026-05", "quarter": "Q2", "team": "ITSystem", "name": "Jojo", "activity_count": 24, "net_token": 118.9, "run_km": 83.67, "walk_km": 18.61, "other_exercise_hours": 0.0, "team_month_token_share_pct": 14.96}, {"month": "2026-05", "quarter": "Q2", "team": "ITSystem", "name": "O", "activity_count": 10, "net_token": 79.6, "run_km": 66.41, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 10.02}, {"month": "2026-05", "quarter": "Q2", "team": "ITSystem", "name": "Oat", "activity_count": 35, "net_token": 138.6, "run_km": 70.09, "walk_km": 19.35, "other_exercise_hours": 9.43, "team_month_token_share_pct": 17.44}, {"month": "2026-05", "quarter": "Q2", "team": "ITSystem", "name": "Oum", "activity_count": 36, "net_token": 138.7, "run_km": 59.74, "walk_km": 67.38, "other_exercise_hours": 0.0, "team_month_token_share_pct": 17.45}, {"month": "2026-05", "quarter": "Q2", "team": "ITSystem", "name": "Palm", "activity_count": 10, "net_token": 51.6, "run_km": 9.58, "walk_km": 40.04, "other_exercise_hours": 0.0, "team_month_token_share_pct": 6.49}, {"month": "2026-05", "quarter": "Q2", "team": "ITSystem", "name": "PAN", "activity_count": 3, "net_token": 12.8, "run_km": 0.0, "walk_km": 12.84, "other_exercise_hours": 0.0, "team_month_token_share_pct": 1.61}, {"month": "2026-05", "quarter": "Q2", "team": "ITSystem", "name": "tae", "activity_count": 2, "net_token": 6.6, "run_km": 0.0, "walk_km": 6.6, "other_exercise_hours": 0.0, "team_month_token_share_pct": 0.83}, {"month": "2026-05", "quarter": "Q2", "team": "ITSystem", "name": "ton", "activity_count": 17, "net_token": 43.9, "run_km": 28.53, "walk_km": 0.0, "other_exercise_hours": 2.68, "team_month_token_share_pct": 5.52}, {"month": "2026-05", "quarter": "Q2", "team": "Mandalorian", "name": "Big", "activity_count": 10, "net_token": 32.9, "run_km": 22.69, "walk_km": 5.77, "other_exercise_hours": 0.0, "team_month_token_share_pct": 3.33}, {"month": "2026-05", "quarter": "Q2", "team": "Mandalorian", "name": "Boat", "activity_count": 6, "net_token": 49.2, "run_km": 41.05, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.98}, {"month": "2026-05", "quarter": "Q2", "team": "Mandalorian", "name": "CHAN", "activity_count": 6, "net_token": 38.7, "run_km": 3.03, "walk_km": 27.84, "other_exercise_hours": 1.55, "team_month_token_share_pct": 3.92}, {"month": "2026-05", "quarter": "Q2", "team": "Mandalorian", "name": "EM", "activity_count": 6, "net_token": 47.9, "run_km": 40.02, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.85}, {"month": "2026-05", "quarter": "Q2", "team": "Mandalorian", "name": "Fuse", "activity_count": 8, "net_token": 59.0, "run_km": 26.99, "walk_km": 9.37, "other_exercise_hours": 2.3, "team_month_token_share_pct": 5.97}, {"month": "2026-05", "quarter": "Q2", "team": "Mandalorian", "name": "GIO", "activity_count": 42, "net_token": 302.8, "run_km": 182.42, "walk_km": 39.33, "other_exercise_hours": 12.28, "team_month_token_share_pct": 30.66}, {"month": "2026-05", "quarter": "Q2", "team": "Mandalorian", "name": "Mos", "activity_count": 5, "net_token": 41.2, "run_km": 30.4, "walk_km": 0.0, "other_exercise_hours": 1.29, "team_month_token_share_pct": 4.17}, {"month": "2026-05", "quarter": "Q2", "team": "Mandalorian", "name": "Neung", "activity_count": 13, "net_token": 47.6, "run_km": 0.0, "walk_km": 17.1, "other_exercise_hours": 8.46, "team_month_token_share_pct": 4.82}, {"month": "2026-05", "quarter": "Q2", "team": "Mandalorian", "name": "PECK", "activity_count": 20, "net_token": 178.3, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 49.53, "team_month_token_share_pct": 18.05}, {"month": "2026-05", "quarter": "Q2", "team": "Mandalorian", "name": "SAND", "activity_count": 16, "net_token": 107.4, "run_km": 78.05, "walk_km": 9.09, "other_exercise_hours": 1.73, "team_month_token_share_pct": 10.87}, {"month": "2026-05", "quarter": "Q2", "team": "Mandalorian", "name": "ToRo", "activity_count": 15, "net_token": 82.7, "run_km": 6.07, "walk_km": 0.0, "other_exercise_hours": 20.96, "team_month_token_share_pct": 8.37}, {"month": "2026-06", "quarter": "Q2", "team": "ITSec", "name": "Bell", "activity_count": 28, "net_token": 168.5, "run_km": 0.0, "walk_km": 74.89, "other_exercise_hours": 25.96, "team_month_token_share_pct": 39.41}, {"month": "2026-06", "quarter": "Q2", "team": "ITSec", "name": "Jo", "activity_count": 16, "net_token": 75.9, "run_km": 31.1, "walk_km": 38.62, "other_exercise_hours": 0.0, "team_month_token_share_pct": 17.75}, {"month": "2026-06", "quarter": "Q2", "team": "ITSec", "name": "Moe", "activity_count": 46, "net_token": 133.2, "run_km": 0.0, "walk_km": 58.76, "other_exercise_hours": 20.73, "team_month_token_share_pct": 31.15}, {"month": "2026-06", "quarter": "Q2", "team": "ITSec", "name": "PuiFai", "activity_count": 15, "net_token": 50.0, "run_km": 24.55, "walk_km": 6.99, "other_exercise_hours": 3.81, "team_month_token_share_pct": 11.69}, {"month": "2026-06", "quarter": "Q2", "team": "ITSystem", "name": "Boy", "activity_count": 13, "net_token": 142.8, "run_km": 119.07, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 21.85}, {"month": "2026-06", "quarter": "Q2", "team": "ITSystem", "name": "Game", "activity_count": 11, "net_token": 58.8, "run_km": 20.85, "walk_km": 0.0, "other_exercise_hours": 9.34, "team_month_token_share_pct": 9.0}, {"month": "2026-06", "quarter": "Q2", "team": "ITSystem", "name": "Jojo", "activity_count": 21, "net_token": 108.6, "run_km": 70.59, "walk_km": 24.06, "other_exercise_hours": 0.0, "team_month_token_share_pct": 16.62}, {"month": "2026-06", "quarter": "Q2", "team": "ITSystem", "name": "O", "activity_count": 6, "net_token": 50.5, "run_km": 42.1, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 7.73}, {"month": "2026-06", "quarter": "Q2", "team": "ITSystem", "name": "Oat", "activity_count": 32, "net_token": 165.0, "run_km": 91.88, "walk_km": 2.02, "other_exercise_hours": 14.21, "team_month_token_share_pct": 25.25}, {"month": "2026-06", "quarter": "Q2", "team": "ITSystem", "name": "Oum", "activity_count": 30, "net_token": 99.5, "run_km": 25.09, "walk_km": 69.45, "other_exercise_hours": 0.0, "team_month_token_share_pct": 15.23}, {"month": "2026-06", "quarter": "Q2", "team": "ITSystem", "name": "PAN", "activity_count": 1, "net_token": 2.2, "run_km": 0.0, "walk_km": 2.24, "other_exercise_hours": 0.0, "team_month_token_share_pct": 0.34}, {"month": "2026-06", "quarter": "Q2", "team": "ITSystem", "name": "ton", "activity_count": 10, "net_token": 26.1, "run_km": 21.71, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 3.99}, {"month": "2026-06", "quarter": "Q2", "team": "Mandalorian", "name": "Big", "activity_count": 14, "net_token": 49.7, "run_km": 28.1, "walk_km": 16.26, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.38}, {"month": "2026-06", "quarter": "Q2", "team": "Mandalorian", "name": "Boat", "activity_count": 11, "net_token": 75.3, "run_km": 62.71, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 8.16}, {"month": "2026-06", "quarter": "Q2", "team": "Mandalorian", "name": "CHAN", "activity_count": 4, "net_token": 24.3, "run_km": 0.0, "walk_km": 24.23, "other_exercise_hours": 0.0, "team_month_token_share_pct": 2.63}, {"month": "2026-06", "quarter": "Q2", "team": "Mandalorian", "name": "EM", "activity_count": 6, "net_token": 51.6, "run_km": 43.09, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.59}, {"month": "2026-06", "quarter": "Q2", "team": "Mandalorian", "name": "Fuse", "activity_count": 6, "net_token": 33.0, "run_km": 25.51, "walk_km": 2.28, "other_exercise_hours": 0.0, "team_month_token_share_pct": 3.58}, {"month": "2026-06", "quarter": "Q2", "team": "Mandalorian", "name": "GIO", "activity_count": 36, "net_token": 237.4, "run_km": 135.25, "walk_km": 31.96, "other_exercise_hours": 12.04, "team_month_token_share_pct": 25.72}, {"month": "2026-06", "quarter": "Q2", "team": "Mandalorian", "name": "Mos", "activity_count": 6, "net_token": 32.4, "run_km": 0.0, "walk_km": 2.12, "other_exercise_hours": 8.44, "team_month_token_share_pct": 3.51}, {"month": "2026-06", "quarter": "Q2", "team": "Mandalorian", "name": "Neung", "activity_count": 11, "net_token": 31.0, "run_km": 0.0, "walk_km": 14.08, "other_exercise_hours": 4.72, "team_month_token_share_pct": 3.36}, {"month": "2026-06", "quarter": "Q2", "team": "Mandalorian", "name": "PECK", "activity_count": 18, "net_token": 134.1, "run_km": 2.34, "walk_km": 0.0, "other_exercise_hours": 36.5, "team_month_token_share_pct": 14.53}, {"month": "2026-06", "quarter": "Q2", "team": "Mandalorian", "name": "SAND", "activity_count": 19, "net_token": 113.6, "run_km": 92.83, "walk_km": 0.0, "other_exercise_hours": 0.58, "team_month_token_share_pct": 12.31}, {"month": "2026-06", "quarter": "Q2", "team": "Mandalorian", "name": "ToRo", "activity_count": 28, "net_token": 140.6, "run_km": 37.68, "walk_km": 21.51, "other_exercise_hours": 20.55, "team_month_token_share_pct": 15.23}, {"month": "2026-07", "quarter": "Q3", "team": "ITSec", "name": "A", "activity_count": 32, "net_token": 309.4, "run_km": 197.12, "walk_km": 30.23, "other_exercise_hours": 0.68, "team_month_token_share_pct": 24.54}, {"month": "2026-07", "quarter": "Q3", "team": "ITSec", "name": "Bell", "activity_count": 40, "net_token": 308.8, "run_km": 99.42, "walk_km": 43.49, "other_exercise_hours": 34.76, "team_month_token_share_pct": 24.5}, {"month": "2026-07", "quarter": "Q3", "team": "ITSec", "name": "Jo", "activity_count": 25, "net_token": 137.8, "run_km": 0.0, "walk_km": 92.34, "other_exercise_hours": 7.63, "team_month_token_share_pct": 10.93}, {"month": "2026-07", "quarter": "Q3", "team": "ITSec", "name": "Mo", "activity_count": 20, "net_token": 94.7, "run_km": 14.6, "walk_km": 0.0, "other_exercise_hours": 18.36, "team_month_token_share_pct": 7.51}, {"month": "2026-07", "quarter": "Q3", "team": "ITSec", "name": "Moe", "activity_count": 54, "net_token": 174.7, "run_km": 3.03, "walk_km": 73.05, "other_exercise_hours": 23.32, "team_month_token_share_pct": 13.86}, {"month": "2026-07", "quarter": "Q3", "team": "ITSec", "name": "pae", "activity_count": 11, "net_token": 109.3, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 16.52, "team_month_token_share_pct": 8.67}, {"month": "2026-07", "quarter": "Q3", "team": "ITSec", "name": "PuiFai", "activity_count": 18, "net_token": 125.9, "run_km": 53.07, "walk_km": 4.92, "other_exercise_hours": 4.07, "team_month_token_share_pct": 9.99}, {"month": "2026-07", "quarter": "Q3", "team": "ITSystem", "name": "AA", "activity_count": 7, "net_token": 90.7, "run_km": 42.24, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 6.72}, {"month": "2026-07", "quarter": "Q3", "team": "ITSystem", "name": "AKPONG", "activity_count": 10, "net_token": 41.1, "run_km": 9.12, "walk_km": 0.0, "other_exercise_hours": 7.14, "team_month_token_share_pct": 3.04}, {"month": "2026-07", "quarter": "Q3", "team": "ITSystem", "name": "CHAT", "activity_count": 14, "net_token": 137.0, "run_km": 114.27, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 10.15}, {"month": "2026-07", "quarter": "Q3", "team": "ITSystem", "name": "Game", "activity_count": 18, "net_token": 143.4, "run_km": 49.02, "walk_km": 4.15, "other_exercise_hours": 9.63, "team_month_token_share_pct": 10.62}, {"month": "2026-07", "quarter": "Q3", "team": "ITSystem", "name": "Jojo", "activity_count": 18, "net_token": 133.5, "run_km": 101.08, "walk_km": 6.23, "other_exercise_hours": 1.45, "team_month_token_share_pct": 9.89}, {"month": "2026-07", "quarter": "Q3", "team": "ITSystem", "name": "NOI", "activity_count": 7, "net_token": 61.7, "run_km": 0.0, "walk_km": 3.01, "other_exercise_hours": 4.46, "team_month_token_share_pct": 4.57}, {"month": "2026-07", "quarter": "Q3", "team": "ITSystem", "name": "O", "activity_count": 10, "net_token": 80.3, "run_km": 66.98, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.95}, {"month": "2026-07", "quarter": "Q3", "team": "ITSystem", "name": "Oat", "activity_count": 34, "net_token": 282.3, "run_km": 169.74, "walk_km": 6.5, "other_exercise_hours": 7.68, "team_month_token_share_pct": 20.91}, {"month": "2026-07", "quarter": "Q3", "team": "ITSystem", "name": "Oum", "activity_count": 21, "net_token": 115.1, "run_km": 21.12, "walk_km": 45.59, "other_exercise_hours": 1.0, "team_month_token_share_pct": 8.53}, {"month": "2026-07", "quarter": "Q3", "team": "ITSystem", "name": "PP", "activity_count": 33, "net_token": 226.5, "run_km": 153.03, "walk_km": 3.01, "other_exercise_hours": 0.0, "team_month_token_share_pct": 16.78}, {"month": "2026-07", "quarter": "Q3", "team": "ITSystem", "name": "tae", "activity_count": 6, "net_token": 38.4, "run_km": 0.0, "walk_km": 38.45, "other_exercise_hours": 0.0, "team_month_token_share_pct": 2.84}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "name": "Big", "activity_count": 17, "net_token": 105.4, "run_km": 31.78, "walk_km": 27.31, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.45}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "name": "Boat", "activity_count": 16, "net_token": 129.3, "run_km": 105.59, "walk_km": 0.0, "other_exercise_hours": 0.67, "team_month_token_share_pct": 6.69}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "name": "CHAN", "activity_count": 16, "net_token": 123.9, "run_km": 16.75, "walk_km": 48.93, "other_exercise_hours": 3.09, "team_month_token_share_pct": 6.41}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "name": "EM", "activity_count": 10, "net_token": 97.8, "run_km": 42.1, "walk_km": 0.0, "other_exercise_hours": 1.77, "team_month_token_share_pct": 5.06}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "name": "FRANK", "activity_count": 9, "net_token": 107.6, "run_km": 49.55, "walk_km": 0.0, "other_exercise_hours": 1.95, "team_month_token_share_pct": 5.57}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "name": "GIO", "activity_count": 48, "net_token": 301.1, "run_km": 149.83, "walk_km": 36.33, "other_exercise_hours": 20.24, "team_month_token_share_pct": 15.57}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "name": "Mos", "activity_count": 7, "net_token": 80.7, "run_km": 0.0, "walk_km": 2.42, "other_exercise_hours": 9.1, "team_month_token_share_pct": 4.17}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "name": "Neung", "activity_count": 9, "net_token": 28.7, "run_km": 0.0, "walk_km": 8.97, "other_exercise_hours": 4.69, "team_month_token_share_pct": 1.48}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "name": "PECK", "activity_count": 22, "net_token": 241.9, "run_km": 11.69, "walk_km": 0.0, "other_exercise_hours": 44.66, "team_month_token_share_pct": 12.51}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "name": "SAND", "activity_count": 14, "net_token": 95.6, "run_km": 46.47, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.94}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "name": "TER", "activity_count": 23, "net_token": 277.7, "run_km": 198.1, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 14.36}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "name": "ToRo", "activity_count": 37, "net_token": 288.0, "run_km": 109.26, "walk_km": 8.74, "other_exercise_hours": 25.5, "team_month_token_share_pct": 14.9}, {"month": "2026-07", "quarter": "Q3", "team": "Mandalorian", "name": "Yu", "activity_count": 18, "net_token": 55.7, "run_km": 19.86, "walk_km": 32.09, "other_exercise_hours": 0.0, "team_month_token_share_pct": 2.88}, {"month": "2026-08", "quarter": "Q3", "team": "ITSec", "name": "A", "activity_count": 36, "net_token": 339.4, "run_km": 194.91, "walk_km": 97.41, "other_exercise_hours": 1.72, "team_month_token_share_pct": 28.11}, {"month": "2026-08", "quarter": "Q3", "team": "ITSec", "name": "Bell", "activity_count": 34, "net_token": 297.2, "run_km": 130.94, "walk_km": 7.05, "other_exercise_hours": 31.17, "team_month_token_share_pct": 24.62}, {"month": "2026-08", "quarter": "Q3", "team": "ITSec", "name": "Jo", "activity_count": 17, "net_token": 101.0, "run_km": 2.01, "walk_km": 31.44, "other_exercise_hours": 11.2, "team_month_token_share_pct": 8.37}, {"month": "2026-08", "quarter": "Q3", "team": "ITSec", "name": "Mo", "activity_count": 19, "net_token": 107.6, "run_km": 14.86, "walk_km": 0.0, "other_exercise_hours": 20.08, "team_month_token_share_pct": 8.91}, {"month": "2026-08", "quarter": "Q3", "team": "ITSec", "name": "Moe", "activity_count": 48, "net_token": 151.8, "run_km": 0.0, "walk_km": 72.43, "other_exercise_hours": 18.81, "team_month_token_share_pct": 12.57}, {"month": "2026-08", "quarter": "Q3", "team": "ITSec", "name": "pae", "activity_count": 21, "net_token": 155.4, "run_km": 33.68, "walk_km": 0.0, "other_exercise_hours": 17.61, "team_month_token_share_pct": 12.87}, {"month": "2026-08", "quarter": "Q3", "team": "ITSec", "name": "PuiFai", "activity_count": 14, "net_token": 54.9, "run_km": 29.32, "walk_km": 2.4, "other_exercise_hours": 4.11, "team_month_token_share_pct": 4.55}, {"month": "2026-08", "quarter": "Q3", "team": "ITSystem", "name": "AA", "activity_count": 7, "net_token": 117.2, "run_km": 73.9, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 9.81}, {"month": "2026-08", "quarter": "Q3", "team": "ITSystem", "name": "AKPONG", "activity_count": 9, "net_token": 46.8, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 8.32, "team_month_token_share_pct": 3.92}, {"month": "2026-08", "quarter": "Q3", "team": "ITSystem", "name": "CHAT", "activity_count": 10, "net_token": 134.1, "run_km": 111.78, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 11.22}, {"month": "2026-08", "quarter": "Q3", "team": "ITSystem", "name": "Game", "activity_count": 12, "net_token": 79.9, "run_km": 47.16, "walk_km": 0.0, "other_exercise_hours": 5.55, "team_month_token_share_pct": 6.69}, {"month": "2026-08", "quarter": "Q3", "team": "ITSystem", "name": "Jojo", "activity_count": 22, "net_token": 148.3, "run_km": 101.13, "walk_km": 15.41, "other_exercise_hours": 2.76, "team_month_token_share_pct": 12.41}, {"month": "2026-08", "quarter": "Q3", "team": "ITSystem", "name": "NOI", "activity_count": 16, "net_token": 89.5, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 16.33, "team_month_token_share_pct": 7.49}, {"month": "2026-08", "quarter": "Q3", "team": "ITSystem", "name": "O", "activity_count": 7, "net_token": 59.4, "run_km": 49.5, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.97}, {"month": "2026-08", "quarter": "Q3", "team": "ITSystem", "name": "Oat", "activity_count": 42, "net_token": 317.0, "run_km": 153.65, "walk_km": 26.19, "other_exercise_hours": 24.68, "team_month_token_share_pct": 26.53}, {"month": "2026-08", "quarter": "Q3", "team": "ITSystem", "name": "Oum", "activity_count": 25, "net_token": 136.8, "run_km": 40.42, "walk_km": 54.46, "other_exercise_hours": 0.0, "team_month_token_share_pct": 11.45}, {"month": "2026-08", "quarter": "Q3", "team": "ITSystem", "name": "PP", "activity_count": 5, "net_token": 59.4, "run_km": 49.57, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.97}, {"month": "2026-08", "quarter": "Q3", "team": "ITSystem", "name": "tae", "activity_count": 1, "net_token": 6.4, "run_km": 4.12, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 0.54}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "name": "Big", "activity_count": 17, "net_token": 101.4, "run_km": 33.66, "walk_km": 32.38, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.29}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "name": "Boat", "activity_count": 14, "net_token": 110.6, "run_km": 83.65, "walk_km": 0.0, "other_exercise_hours": 2.38, "team_month_token_share_pct": 5.77}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "name": "CHAN", "activity_count": 15, "net_token": 91.5, "run_km": 5.04, "walk_km": 85.6, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.77}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "name": "EM", "activity_count": 10, "net_token": 80.4, "run_km": 28.08, "walk_km": 0.0, "other_exercise_hours": 6.61, "team_month_token_share_pct": 4.19}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "name": "FRANK", "activity_count": 19, "net_token": 206.9, "run_km": 86.37, "walk_km": 0.0, "other_exercise_hours": 12.48, "team_month_token_share_pct": 10.79}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "name": "GIO", "activity_count": 50, "net_token": 319.7, "run_km": 162.22, "walk_km": 31.96, "other_exercise_hours": 21.88, "team_month_token_share_pct": 16.67}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "name": "Mos", "activity_count": 11, "net_token": 81.0, "run_km": 0.0, "walk_km": 17.89, "other_exercise_hours": 10.56, "team_month_token_share_pct": 4.22}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "name": "Neung", "activity_count": 11, "net_token": 58.0, "run_km": 4.38, "walk_km": 15.61, "other_exercise_hours": 4.37, "team_month_token_share_pct": 3.02}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "name": "PECK", "activity_count": 20, "net_token": 175.2, "run_km": 21.55, "walk_km": 0.0, "other_exercise_hours": 35.59, "team_month_token_share_pct": 9.13}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "name": "SAND", "activity_count": 14, "net_token": 98.3, "run_km": 52.64, "walk_km": 7.01, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.12}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "name": "TER", "activity_count": 27, "net_token": 311.4, "run_km": 259.61, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 16.23}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "name": "ToRo", "activity_count": 36, "net_token": 244.4, "run_km": 106.88, "walk_km": 4.26, "other_exercise_hours": 25.97, "team_month_token_share_pct": 12.74}, {"month": "2026-08", "quarter": "Q3", "team": "Mandalorian", "name": "Yu", "activity_count": 9, "net_token": 39.5, "run_km": 10.66, "walk_km": 16.15, "other_exercise_hours": 0.0, "team_month_token_share_pct": 2.06}, {"month": "2026-09", "quarter": "Q3", "team": "ITSec", "name": "A", "activity_count": 21, "net_token": 255.0, "run_km": 161.66, "walk_km": 5.39, "other_exercise_hours": 0.0, "team_month_token_share_pct": 24.72}, {"month": "2026-09", "quarter": "Q3", "team": "ITSec", "name": "Bell", "activity_count": 36, "net_token": 392.6, "run_km": 123.74, "walk_km": 0.0, "other_exercise_hours": 37.44, "team_month_token_share_pct": 38.06}, {"month": "2026-09", "quarter": "Q3", "team": "ITSec", "name": "Jo", "activity_count": 10, "net_token": 102.6, "run_km": 0.0, "walk_km": 13.11, "other_exercise_hours": 11.49, "team_month_token_share_pct": 9.95}, {"month": "2026-09", "quarter": "Q3", "team": "ITSec", "name": "Mo", "activity_count": 2, "net_token": 11.4, "run_km": 0.0, "walk_km": 3.37, "other_exercise_hours": 1.33, "team_month_token_share_pct": 1.11}, {"month": "2026-09", "quarter": "Q3", "team": "ITSec", "name": "Moe", "activity_count": 42, "net_token": 139.6, "run_km": 0.0, "walk_km": 58.48, "other_exercise_hours": 16.03, "team_month_token_share_pct": 13.54}, {"month": "2026-09", "quarter": "Q3", "team": "ITSec", "name": "pae", "activity_count": 10, "net_token": 93.7, "run_km": 2.0, "walk_km": 0.0, "other_exercise_hours": 16.11, "team_month_token_share_pct": 9.08}, {"month": "2026-09", "quarter": "Q3", "team": "ITSec", "name": "PuiFai", "activity_count": 8, "net_token": 36.5, "run_km": 23.85, "walk_km": 0.0, "other_exercise_hours": 1.19, "team_month_token_share_pct": 3.54}, {"month": "2026-09", "quarter": "Q3", "team": "ITSystem", "name": "AKPONG", "activity_count": 11, "net_token": 51.9, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 12.35, "team_month_token_share_pct": 11.83}, {"month": "2026-09", "quarter": "Q3", "team": "ITSystem", "name": "CHAT", "activity_count": 1, "net_token": 12.4, "run_km": 10.35, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 2.83}, {"month": "2026-09", "quarter": "Q3", "team": "ITSystem", "name": "Game", "activity_count": 6, "net_token": 45.1, "run_km": 29.57, "walk_km": 0.0, "other_exercise_hours": 2.29, "team_month_token_share_pct": 10.28}, {"month": "2026-09", "quarter": "Q3", "team": "ITSystem", "name": "Jojo", "activity_count": 10, "net_token": 69.1, "run_km": 50.27, "walk_km": 8.96, "other_exercise_hours": 0.0, "team_month_token_share_pct": 15.75}, {"month": "2026-09", "quarter": "Q3", "team": "ITSystem", "name": "NOI", "activity_count": 9, "net_token": 43.7, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 10.4, "team_month_token_share_pct": 9.96}, {"month": "2026-09", "quarter": "Q3", "team": "ITSystem", "name": "O", "activity_count": 7, "net_token": 56.0, "run_km": 42.9, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 12.76}, {"month": "2026-09", "quarter": "Q3", "team": "ITSystem", "name": "Oat", "activity_count": 18, "net_token": 140.1, "run_km": 65.82, "walk_km": 12.38, "other_exercise_hours": 10.1, "team_month_token_share_pct": 31.94}, {"month": "2026-09", "quarter": "Q3", "team": "ITSystem", "name": "Oum", "activity_count": 4, "net_token": 20.4, "run_km": 6.37, "walk_km": 11.56, "other_exercise_hours": 0.0, "team_month_token_share_pct": 4.65}, {"month": "2026-09", "quarter": "Q3", "team": "Mandalorian", "name": "Big", "activity_count": 18, "net_token": 133.6, "run_km": 5.42, "walk_km": 11.29, "other_exercise_hours": 12.12, "team_month_token_share_pct": 8.8}, {"month": "2026-09", "quarter": "Q3", "team": "Mandalorian", "name": "Boat", "activity_count": 7, "net_token": 53.0, "run_km": 42.43, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 3.49}, {"month": "2026-09", "quarter": "Q3", "team": "Mandalorian", "name": "CHAN", "activity_count": 10, "net_token": 49.4, "run_km": 3.03, "walk_km": 45.9, "other_exercise_hours": 0.0, "team_month_token_share_pct": 3.26}, {"month": "2026-09", "quarter": "Q3", "team": "Mandalorian", "name": "EM", "activity_count": 5, "net_token": 29.0, "run_km": 17.77, "walk_km": 3.03, "other_exercise_hours": 1.03, "team_month_token_share_pct": 1.91}, {"month": "2026-09", "quarter": "Q3", "team": "Mandalorian", "name": "FRANK", "activity_count": 5, "net_token": 36.8, "run_km": 15.12, "walk_km": 0.0, "other_exercise_hours": 3.78, "team_month_token_share_pct": 2.42}, {"month": "2026-09", "quarter": "Q3", "team": "Mandalorian", "name": "GIO", "activity_count": 28, "net_token": 278.6, "run_km": 140.45, "walk_km": 8.9, "other_exercise_hours": 11.36, "team_month_token_share_pct": 18.36}, {"month": "2026-09", "quarter": "Q3", "team": "Mandalorian", "name": "Mos", "activity_count": 8, "net_token": 47.6, "run_km": 0.0, "walk_km": 9.96, "other_exercise_hours": 7.45, "team_month_token_share_pct": 3.14}, {"month": "2026-09", "quarter": "Q3", "team": "Mandalorian", "name": "Neung", "activity_count": 2, "net_token": 6.9, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 1.64, "team_month_token_share_pct": 0.45}, {"month": "2026-09", "quarter": "Q3", "team": "Mandalorian", "name": "PECK", "activity_count": 19, "net_token": 247.9, "run_km": 17.38, "walk_km": 0.0, "other_exercise_hours": 41.9, "team_month_token_share_pct": 16.34}, {"month": "2026-09", "quarter": "Q3", "team": "Mandalorian", "name": "SAND", "activity_count": 2, "net_token": 5.6, "run_km": 4.68, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 0.37}, {"month": "2026-09", "quarter": "Q3", "team": "Mandalorian", "name": "TER", "activity_count": 23, "net_token": 373.6, "run_km": 233.99, "walk_km": 18.01, "other_exercise_hours": 0.0, "team_month_token_share_pct": 24.62}, {"month": "2026-09", "quarter": "Q3", "team": "Mandalorian", "name": "ToRo", "activity_count": 30, "net_token": 255.6, "run_km": 100.7, "walk_km": 2.09, "other_exercise_hours": 19.32, "team_month_token_share_pct": 16.84}, {"month": "2026-10", "quarter": "Q4", "team": "ITSec", "name": "A", "activity_count": 30, "net_token": 386.6, "run_km": 315.28, "walk_km": 8.36, "other_exercise_hours": 0.0, "team_month_token_share_pct": 40.44}, {"month": "2026-10", "quarter": "Q4", "team": "ITSec", "name": "Bell", "activity_count": 29, "net_token": 240.7, "run_km": 110.75, "walk_km": 0.0, "other_exercise_hours": 25.69, "team_month_token_share_pct": 25.18}, {"month": "2026-10", "quarter": "Q4", "team": "ITSec", "name": "Jo", "activity_count": 7, "net_token": 70.1, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 11.71, "team_month_token_share_pct": 7.33}, {"month": "2026-10", "quarter": "Q4", "team": "ITSec", "name": "Mo", "activity_count": 15, "net_token": 98.0, "run_km": 42.77, "walk_km": 0.0, "other_exercise_hours": 9.86, "team_month_token_share_pct": 10.25}, {"month": "2026-10", "quarter": "Q4", "team": "ITSec", "name": "Moe", "activity_count": 38, "net_token": 116.1, "run_km": 0.0, "walk_km": 42.66, "other_exercise_hours": 17.48, "team_month_token_share_pct": 12.14}, {"month": "2026-10", "quarter": "Q4", "team": "ITSec", "name": "pae", "activity_count": 1, "net_token": 5.8, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 1.37, "team_month_token_share_pct": 0.61}, {"month": "2026-10", "quarter": "Q4", "team": "ITSec", "name": "PuiFai", "activity_count": 7, "net_token": 38.7, "run_km": 13.22, "walk_km": 18.19, "other_exercise_hours": 1.13, "team_month_token_share_pct": 4.05}, {"month": "2026-10", "quarter": "Q4", "team": "ITSystem", "name": "AKPONG", "activity_count": 4, "net_token": 23.8, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 5.69, "team_month_token_share_pct": 9.94}, {"month": "2026-10", "quarter": "Q4", "team": "ITSystem", "name": "CHAT", "activity_count": 5, "net_token": 54.3, "run_km": 45.28, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 22.68}, {"month": "2026-10", "quarter": "Q4", "team": "ITSystem", "name": "Jojo", "activity_count": 12, "net_token": 82.9, "run_km": 60.12, "walk_km": 10.89, "other_exercise_hours": 0.0, "team_month_token_share_pct": 34.63}, {"month": "2026-10", "quarter": "Q4", "team": "ITSystem", "name": "NOI", "activity_count": 7, "net_token": 32.8, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 7.84, "team_month_token_share_pct": 13.7}, {"month": "2026-10", "quarter": "Q4", "team": "ITSystem", "name": "O", "activity_count": 7, "net_token": 45.6, "run_km": 38.0, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 19.05}, {"month": "2026-10", "quarter": "Q4", "team": "Mandalorian", "name": "Big", "activity_count": 17, "net_token": 109.2, "run_km": 10.42, "walk_km": 0.0, "other_exercise_hours": 16.29, "team_month_token_share_pct": 10.67}, {"month": "2026-10", "quarter": "Q4", "team": "Mandalorian", "name": "Boat", "activity_count": 10, "net_token": 66.5, "run_km": 53.06, "walk_km": 2.93, "other_exercise_hours": 0.0, "team_month_token_share_pct": 6.5}, {"month": "2026-10", "quarter": "Q4", "team": "Mandalorian", "name": "CHAN", "activity_count": 7, "net_token": 34.6, "run_km": 0.0, "walk_km": 34.56, "other_exercise_hours": 0.0, "team_month_token_share_pct": 3.38}, {"month": "2026-10", "quarter": "Q4", "team": "Mandalorian", "name": "EM", "activity_count": 10, "net_token": 56.7, "run_km": 29.58, "walk_km": 18.39, "other_exercise_hours": 0.67, "team_month_token_share_pct": 5.54}, {"month": "2026-10", "quarter": "Q4", "team": "Mandalorian", "name": "GIO", "activity_count": 28, "net_token": 236.2, "run_km": 158.23, "walk_km": 6.95, "other_exercise_hours": 9.42, "team_month_token_share_pct": 23.08}, {"month": "2026-10", "quarter": "Q4", "team": "Mandalorian", "name": "Mos", "activity_count": 5, "net_token": 22.3, "run_km": 0.0, "walk_km": 7.73, "other_exercise_hours": 3.46, "team_month_token_share_pct": 2.18}, {"month": "2026-10", "quarter": "Q4", "team": "Mandalorian", "name": "Neung", "activity_count": 8, "net_token": 31.9, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 7.62, "team_month_token_share_pct": 3.12}, {"month": "2026-10", "quarter": "Q4", "team": "Mandalorian", "name": "PECK", "activity_count": 13, "net_token": 122.1, "run_km": 11.74, "walk_km": 0.0, "other_exercise_hours": 25.72, "team_month_token_share_pct": 11.93}, {"month": "2026-10", "quarter": "Q4", "team": "Mandalorian", "name": "SAND", "activity_count": 4, "net_token": 32.5, "run_km": 27.06, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 3.18}, {"month": "2026-10", "quarter": "Q4", "team": "Mandalorian", "name": "TER", "activity_count": 8, "net_token": 121.1, "run_km": 100.96, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 11.84}, {"month": "2026-10", "quarter": "Q4", "team": "Mandalorian", "name": "ToRo", "activity_count": 23, "net_token": 190.1, "run_km": 93.58, "walk_km": 2.53, "other_exercise_hours": 17.66, "team_month_token_share_pct": 18.58}, {"month": "2026-11", "quarter": "Q4", "team": "ITSec", "name": "A", "activity_count": 12, "net_token": 144.2, "run_km": 120.43, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 30.76}, {"month": "2026-11", "quarter": "Q4", "team": "ITSec", "name": "Bell", "activity_count": 13, "net_token": 116.3, "run_km": 45.86, "walk_km": 0.0, "other_exercise_hours": 14.6, "team_month_token_share_pct": 24.81}, {"month": "2026-11", "quarter": "Q4", "team": "ITSec", "name": "Jo", "activity_count": 3, "net_token": 34.7, "run_km": 21.16, "walk_km": 0.0, "other_exercise_hours": 1.55, "team_month_token_share_pct": 7.4}, {"month": "2026-11", "quarter": "Q4", "team": "ITSec", "name": "Mo", "activity_count": 13, "net_token": 94.9, "run_km": 40.71, "walk_km": 0.0, "other_exercise_hours": 11.01, "team_month_token_share_pct": 20.24}, {"month": "2026-11", "quarter": "Q4", "team": "ITSec", "name": "Moe", "activity_count": 23, "net_token": 69.3, "run_km": 7.11, "walk_km": 22.13, "other_exercise_hours": 9.19, "team_month_token_share_pct": 14.78}, {"month": "2026-11", "quarter": "Q4", "team": "ITSec", "name": "PuiFai", "activity_count": 2, "net_token": 9.4, "run_km": 7.88, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 2.01}, {"month": "2026-11", "quarter": "Q4", "team": "ITSystem", "name": "AKPONG", "activity_count": 2, "net_token": 10.1, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 2.39, "team_month_token_share_pct": 5.0}, {"month": "2026-11", "quarter": "Q4", "team": "ITSystem", "name": "CHAT", "activity_count": 7, "net_token": 95.2, "run_km": 79.43, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 47.15}, {"month": "2026-11", "quarter": "Q4", "team": "ITSystem", "name": "Jojo", "activity_count": 6, "net_token": 58.4, "run_km": 46.04, "walk_km": 3.2, "other_exercise_hours": 0.0, "team_month_token_share_pct": 28.93}, {"month": "2026-11", "quarter": "Q4", "team": "ITSystem", "name": "NOI", "activity_count": 4, "net_token": 21.1, "run_km": 9.66, "walk_km": 0.0, "other_exercise_hours": 2.26, "team_month_token_share_pct": 10.45}, {"month": "2026-11", "quarter": "Q4", "team": "ITSystem", "name": "O", "activity_count": 1, "net_token": 5.6, "run_km": 4.7, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 2.77}, {"month": "2026-11", "quarter": "Q4", "team": "ITSystem", "name": "PP", "activity_count": 1, "net_token": 11.5, "run_km": 9.57, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 5.7}, {"month": "2026-11", "quarter": "Q4", "team": "Mandalorian", "name": "Boat", "activity_count": 5, "net_token": 35.2, "run_km": 29.22, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 7.43}, {"month": "2026-11", "quarter": "Q4", "team": "Mandalorian", "name": "CHAN", "activity_count": 3, "net_token": 12.2, "run_km": 0.0, "walk_km": 12.15, "other_exercise_hours": 0.0, "team_month_token_share_pct": 2.57}, {"month": "2026-11", "quarter": "Q4", "team": "Mandalorian", "name": "EM", "activity_count": 6, "net_token": 41.3, "run_km": 30.79, "walk_km": 0.0, "other_exercise_hours": 1.04, "team_month_token_share_pct": 8.71}, {"month": "2026-11", "quarter": "Q4", "team": "Mandalorian", "name": "FRANK", "activity_count": 2, "net_token": 12.5, "run_km": 5.08, "walk_km": 0.0, "other_exercise_hours": 1.53, "team_month_token_share_pct": 2.64}, {"month": "2026-11", "quarter": "Q4", "team": "Mandalorian", "name": "GIO", "activity_count": 12, "net_token": 129.8, "run_km": 108.26, "walk_km": 0.0, "other_exercise_hours": 0.0, "team_month_token_share_pct": 27.38}, {"month": "2026-11", "quarter": "Q4", "team": "Mandalorian", "name": "Mos", "activity_count": 6, "net_token": 37.6, "run_km": 0.0, "walk_km": 7.88, "other_exercise_hours": 7.05, "team_month_token_share_pct": 7.93}, {"month": "2026-11", "quarter": "Q4", "team": "Mandalorian", "name": "Neung", "activity_count": 1, "net_token": 3.5, "run_km": 0.0, "walk_km": 0.0, "other_exercise_hours": 0.84, "team_month_token_share_pct": 0.74}, {"month": "2026-11", "quarter": "Q4", "team": "Mandalorian", "name": "PECK", "activity_count": 8, "net_token": 76.6, "run_km": 12.08, "walk_km": 0.0, "other_exercise_hours": 14.79, "team_month_token_share_pct": 16.16}, {"month": "2026-11", "quarter": "Q4", "team": "Mandalorian", "name": "ToRo", "activity_count": 15, "net_token": 125.3, "run_km": 63.48, "walk_km": 2.0, "other_exercise_hours": 11.22, "team_month_token_share_pct": 26.43}]};
+
+const TEAM_COLORS = {
+  Mandalorian: { primary: "#38BDF8", fg: "#BAE6FD", bg: "#082F49" },
+  ITSec: { primary: "#F59E0B", fg: "#FDE68A", bg: "#451A03" },
+  ITSystem: { primary: "#10B981", fg: "#A7F3D0", bg: "#064E3B" },
+};
+
+const TRIBE_INFO = {
+  Run: { th: "สายวิ่ง", code: "RUN ENGINE", color: "#38BDF8" },
+  Other: { th: "สายเวท/กีฬาอื่น", code: "GYM & SPORTS", color: "#F59E0B" },
+  Hybrid: { th: "สายไฮบริด", code: "HYBRID ALL-ROUNDER", color: "#A78BFA" },
+  Walk: { th: "สายเดิน", code: "WALK SPECIALIST", color: "#10B981" },
+};
+
+const TH_MONTHS = { "01":"ม.ค.","02":"ก.พ.","03":"มี.ค.","04":"เม.ย.","05":"พ.ค.","06":"มิ.ย.","07":"ก.ค.","08":"ส.ค.","09":"ก.ย.","10":"ต.ค.","11":"พ.ย.","12":"ธ.ค." };
+const fmtM = (ym) => ym && ym.includes("-") ? (TH_MONTHS[ym.split("-")[1]] || ym) : "-";
+const fmtNum = (n, d=1) => Number(n || 0).toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+
+const CHAPTERS = [
+  { id: "cover", label: "1. เปิดเรื่อง" },
+  { id: "big", label: "2. ภาพรวมชมรม" },
+  { id: "race", label: "3. กราฟวิ่ง 11 เดือน" },
+  { id: "teams", label: "4. เทียบ 3 ทีม" },
+  { id: "backbone", label: "5. พลัง 31 คน" },
+  { id: "tribes", label: "6. 4 สายพันธุ์" },
+  { id: "wall", label: "7. Wall of 36" },
+];
+
+let currentSlide = 0;
+let raceMode = "cumulative";
+let raceMetric = "net_token";
+let raceMonthIdx = REPLAY_DATA.club_monthly.length - 1;
+let raceTimer = null;
+let teamFairMode = "total";
+let wallTeamFilter = "All";
+let wallSearch = "";
+let tribeFilter = "All";
+
+const memberMonths = {};
+REPLAY_DATA.athlete_monthly.forEach(r => {
+  if (!memberMonths[r.name]) memberMonths[r.name] = {};
+  memberMonths[r.name][r.month] = r.net_token;
+});
+
+function heroInfo(m) {
+  if (m.primary_pillar === "Run") return { val: fmtNum(m.run_km, 1) + " km", sub: `ระยะวิ่งสะสม (${m.team_run_share_pct}% ของทีม ${m.team})`, col: "#38BDF8" };
+  if (m.primary_pillar === "Walk") return { val: fmtNum(m.walk_km, 1) + " km", sub: `ระยะเดินสะสม (${m.team_walk_share_pct}% ของทีม ${m.team})`, col: "#10B981" };
+  if (m.primary_pillar === "Other") return { val: fmtNum(m.other_exercise_hours, 1) + " ชม.", sub: `เวลาออกกำลังกายอื่น (${m.team_other_hours_share_pct}% ของทีม ${m.team})`, col: "#F59E0B" };
+  return { val: fmtNum(m.net_token, 1) + " Tokens", sub: `คะแนนไฮบริดทุกสาย (${m.team_token_share_pct}% ของทีม ${m.team})`, col: "#A78BFA" };
+}
+
+function renderNav() {
+  const nav = document.getElementById("chaptersNav");
+  nav.innerHTML = CHAPTERS.map((c, idx) =>
+    `<button class="chap-btn ${idx === currentSlide ? "active" : ""}" onclick="goSlide(${idx})">${c.label}</button>`
+  ).join("");
+  document.getElementById("progressFill").style.width = `${((currentSlide + 1) / CHAPTERS.length) * 100}%`;
+  document.getElementById("slideIndicator").textContent = `บทที่ ${currentSlide + 1} / ${CHAPTERS.length} • ${CHAPTERS[currentSlide].label}`;
+}
+
+function goSlide(idx) {
+  stopRace();
+  currentSlide = Math.max(0, Math.min(CHAPTERS.length - 1, idx));
+  renderNav();
+  renderCurrentSlide();
+}
+
+function renderCurrentSlide() {
+  const stage = document.getElementById("stage");
+  const id = CHAPTERS[currentSlide].id;
+  if (id === "cover") stage.innerHTML = viewCover();
+  else if (id === "big") stage.innerHTML = viewBigNumbers();
+  else if (id === "race") { stage.innerHTML = viewRace(); updateRaceView(); }
+  else if (id === "teams") stage.innerHTML = viewTeams();
+  else if (id === "backbone") stage.innerHTML = viewBackbone();
+  else if (id === "tribes") stage.innerHTML = viewTribes();
+  else stage.innerHTML = viewWall();
+}
+
+function viewCover() {
+  const meta = REPLAY_DATA.metadata;
+  const tot = REPLAY_DATA.club_annual_total;
+  const teams = REPLAY_DATA.team_annual_fairness.map(t => {
+    const c = TEAM_COLORS[t.team];
+    return `<span class="pill" style="border-color:${c.primary};background:${c.bg};color:${c.fg}">
+      <span class="dot" style="background:${c.primary}"></span>${t.team} • ${t.registered_members} คน</span>`;
+  }).join("");
+  return `<div class="slide active">
+    <div class="eyebrow">NTL SYNERGY TOKEN 2026 • CLUB YEAR REPLAY</div>
+    <h1>ทุกก้าว ทุกหยดเหงื่อ<br><span style="color:var(--manda)">จากทั้ง ${meta.registered_members} คน</span></h1>
+    <p class="sub">ช่วงข้อมูล ${meta.date_range.start} ถึง ${meta.date_range.end} • อัปเดตจากแหล่งข้อมูลชมรมชุดเดียว</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:26px">${teams}</div>
+    <div class="grid-3">
+      <div class="card"><div class="eyebrow" style="color:var(--itsys)">ACTIVE MEMBERS</div>
+        <div class="big-num">${meta.active_members} / ${meta.registered_members}</div><div class="m-meta">มีส่วนร่วมจริงครบ 100% ของชมรม</div></div>
+      <div class="card"><div class="eyebrow" style="color:var(--itsec)">ACTIVITIES</div>
+        <div class="big-num">${tot.activity_count.toLocaleString()}</div><div class="m-meta">กิจกรรมที่ผ่านการตรวจสอบความสะอาดแล้ว</div></div>
+      <div class="card"><div class="eyebrow">NET TOKENS</div>
+        <div class="big-num" style="color:var(--manda)">${fmtNum(tot.net_token, 1)}</div><div class="m-meta">คะแนนรวมทั้งชมรมตลอดปี</div></div>
+    </div>
+    <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="goSlide(1)">เริ่มเรื่องราวทั้งปี →</button>
+      <button class="btn" onclick="goSlide(6)">เปิดดูการ์ดส่วนตัวของฉัน (36 คน)</button>
+    </div>
+  </div>`;
+}
+
+function viewBigNumbers() {
+  const tot = REPLAY_DATA.club_annual_total;
+  const totalKm = tot.run_km + tot.walk_km;
+  const runPct = totalKm > 0 ? (tot.run_km / totalKm * 100) : 0;
+  const trips = Math.max(1, Math.round(totalKm / 700));
+  const fullDays = tot.other_exercise_hours / 24;
+  return `<div class="slide active">
+    <div class="eyebrow">THE BIG NUMBERS • ภาพรวมทั้งชมรม</div>
+    <h2>ตัวเลขรวมที่พวกเราสร้างด้วยกัน</h2>
+    <div class="grid-2" style="margin-bottom:18px">
+      <div class="card" style="border-color:rgba(56,189,248,0.5)">
+        <div class="eyebrow">CLUB NET TOKENS</div>
+        <div class="big-num" style="color:var(--manda)">${fmtNum(tot.net_token, 1)}</div>
+        <div class="m-meta">จาก ${tot.activity_count.toLocaleString()} กิจกรรม ของทั้ง 36 คน</div>
+      </div>
+      <div class="card" style="border-color:rgba(16,185,129,0.5)">
+        <div class="eyebrow" style="color:var(--itsys)">TOTAL DISTANCE (RUN + WALK)</div>
+        <div class="big-num" style="color:var(--itsys)">${fmtNum(totalKm, 1)} km</div>
+        <div class="m-meta">มากกว่า 1/3 ของเส้นรอบวงโลก • กรุงเทพฯ–เชียงใหม่ ~${trips} เที่ยว</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${runPct.toFixed(1)}%;background:linear-gradient(90deg,var(--manda),var(--itsys))"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700">
+          <span style="color:var(--manda)">วิ่ง ${fmtNum(tot.run_km, 1)} km (${runPct.toFixed(1)}%)</span>
+          <span style="color:var(--itsys)">เดิน ${fmtNum(tot.walk_km, 1)} km (${(100 - runPct).toFixed(1)}%)</span>
+        </div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card" style="border-color:rgba(245,158,11,0.45)">
+        <div class="eyebrow" style="color:var(--itsec)">OTHER EXERCISE HOURS</div>
+        <div class="big-num" style="color:var(--itsec)">${fmtNum(tot.other_exercise_hours, 1)} ชม.</div>
+        <div class="m-meta">เทียบเท่า ~${fmtNum(fullDays, 1)} วันเต็ม (เวท ปั่น แบดมินตัน บอล ว่ายน้ำ เทนนิส กอล์ฟ)</div>
+      </div>
+      <div class="card" style="border-color:rgba(167,139,250,0.45)">
+        <div class="eyebrow" style="color:var(--hybrid)">CLUB AVERAGE</div>
+        <div class="big-num" style="color:var(--hybrid)">${fmtNum(tot.net_token / 36, 1)}</div>
+        <div class="m-meta">Net Tokens เฉลี่ยต่อคน (จากสมาชิกทั้งหมด 36 คน)</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function viewRace() {
+  return `<div class="slide active">
+    <div class="eyebrow">MONTHLY MOMENTUM • BAR RACE</div>
+    <h2>เส้นทาง 3 ทีมตลอดปี 2026</h2>
+    <div class="controls-row">
+      <button class="btn btn-primary" id="racePlayBtn" onclick="toggleRace()">▶ Play Animation</button>
+      <div class="seg-group">
+        <button class="seg-btn ${raceMode === "cumulative" ? "active" : ""}" onclick="setRaceMode('cumulative')">สะสม (Cumulative)</button>
+        <button class="seg-btn ${raceMode === "monthly" ? "active" : ""}" onclick="setRaceMode('monthly')">รายเดือน (Monthly)</button>
+      </div>
+      <div class="seg-group">
+        <button class="seg-btn ${raceMetric === "net_token" ? "active" : ""}" onclick="setRaceMetric('net_token')">Tokens</button>
+        <button class="seg-btn ${raceMetric === "run_km" ? "active" : ""}" onclick="setRaceMetric('run_km')">วิ่ง km</button>
+        <button class="seg-btn ${raceMetric === "walk_km" ? "active" : ""}" onclick="setRaceMetric('walk_km')">เดิน km</button>
+        <button class="seg-btn ${raceMetric === "other_exercise_hours" ? "active" : ""}" onclick="setRaceMetric('other_exercise_hours')">อื่นๆ ชม.</button>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+        <div style="font-size:24px;font-weight:900" id="raceMonthLabel"></div>
+        <input type="range" id="raceSlider" min="0" max="${REPLAY_DATA.club_monthly.length - 1}" value="${raceMonthIdx}" oninput="onScrub(this.value)" style="width:260px">
+      </div>
+      <div id="raceBars"></div>
+    </div>
+    <div class="card">
+      <div style="font-weight:800;margin-bottom:6px">ยอดรวมชมรมรายเดือน (คลิกแท่งเพื่อกระโดดไปเดือนนั้น)</div>
+      <div class="spark-wrap" id="raceClubSpark"></div>
+    </div>
+  </div>`;
+}
+
+function setRaceMode(m) { raceMode = m; renderCurrentSlide(); }
+function setRaceMetric(m) { raceMetric = m; renderCurrentSlide(); }
+function onScrub(v) { stopRace(); raceMonthIdx = Number(v); updateRaceView(); }
+function stopRace() { if (raceTimer) { clearInterval(raceTimer); raceTimer = null; } const b = document.getElementById("racePlayBtn"); if (b) b.textContent = "▶ Play Animation"; }
+function toggleRace() {
+  if (raceTimer) { stopRace(); return; }
+  if (raceMonthIdx >= REPLAY_DATA.club_monthly.length - 1) raceMonthIdx = 0;
+  document.getElementById("racePlayBtn").textContent = "⏸ Pause";
+  updateRaceView();
+  raceTimer = setInterval(() => {
+    if (raceMonthIdx < REPLAY_DATA.club_monthly.length - 1) {
+      raceMonthIdx += 1;
+      document.getElementById("raceSlider").value = raceMonthIdx;
+      updateRaceView();
+    } else {
+      stopRace();
+    }
+  }, 700);
+}
+
+function updateRaceView() {
+  const months = REPLAY_DATA.club_monthly.map(r => r.month);
+  const currMonth = months[raceMonthIdx];
+  const label = document.getElementById("raceMonthLabel");
+  if (!label) return;
+  const qtr = REPLAY_DATA.club_monthly[raceMonthIdx].quarter;
+  const note = currMonth === "2026-04" ? " • ITSec เข้าร่วมสนามใน Q2!" : "";
+  label.textContent = `${fmtM(currMonth)} 2026 (${qtr})${note}`;
+
+  const teams = ["Mandalorian", "ITSec", "ITSystem"].map(t => {
+    let val = 0;
+    let act = 0;
+    for (let i = 0; i <= raceMonthIdx; i++) {
+      const row = REPLAY_DATA.team_monthly.find(x => x.month === months[i] && x.team === t);
+      if (row) {
+        if (raceMode === "cumulative") val += row[raceMetric];
+        else if (i === raceMonthIdx) val = row[raceMetric];
+        if (i === raceMonthIdx) act = row.active_members;
+      }
+    }
+    return { team: t, val, act };
+  }).sort((a, b) => b.val - a.val);
+
+  const maxV = Math.max(...teams.map(t => t.val), 1);
+  document.getElementById("raceBars").innerHTML = teams.map(t => {
+    const c = TEAM_COLORS[t.team];
+    const w = Math.max(2, (t.val / maxV) * 100);
+    return `<div class="race-row">
+      <div class="race-head"><span style="color:${c.fg}">${t.team} (${t.act} คน Active)</span><span>${fmtNum(t.val, 1)}</span></div>
+      <div class="bar-track"><div class="bar-fill" style="width:${w.toFixed(1)}%;background:${c.primary}"></div></div>
+    </div>`;
+  }).join("");
+
+  const maxClub = Math.max(...REPLAY_DATA.club_monthly.map(r => r[raceMetric]), 1);
+  document.getElementById("raceClubSpark").innerHTML = REPLAY_DATA.club_monthly.map((r, i) => {
+    const h = Math.max(8, (r[raceMetric] / maxClub) * 105);
+    const active = i === raceMonthIdx;
+    return `<div class="spark-col" style="cursor:pointer" onclick="onScrub(${i})">
+      <div class="spark-val">${Math.round(r[raceMetric])}</div>
+      <div class="spark-bar" style="height:${h}px;background:${active ? "var(--manda)" : "#334155"}"></div>
+      <div class="spark-lbl" style="color:${active ? "#F8FAFC" : "var(--muted)"}">${fmtM(r.month)}</div>
+    </div>`;
+  }).join("");
+}
+
+function viewTeams() {
+  const fair = [...REPLAY_DATA.team_annual_fairness];
+  const isTotal = teamFairMode === "total";
+  fair.sort((a, b) => isTotal ? b.net_token - a.net_token : b.token_per_active_member_month - a.token_per_active_member_month);
+  const maxVal = Math.max(...fair.map(r => isTotal ? r.net_token : r.token_per_active_member_month), 1);
+  return `<div class="slide active">
+    <div class="eyebrow">3 TEAMS • FAIR PLAY BATTLE</div>
+    <h2>สลับดูพลังทั้ง 2 มุมของ 3 ทีม</h2>
+    <div class="controls-row">
+      <div class="seg-group">
+        <button class="seg-btn ${isTotal ? "active" : ""}" onclick="teamFairMode='total';renderCurrentSlide()">ยอดรวมทั้งทีม (Total Volume)</button>
+        <button class="seg-btn ${!isTotal ? "active" : ""}" onclick="teamFairMode='per_capita';renderCurrentSlide()">เฉลี่ยต่อคน-เดือนที่ Active (Fair Per-Capita)</button>
+      </div>
+    </div>
+    <div class="card">
+      ${fair.map(r => {
+        const c = TEAM_COLORS[r.team];
+        const metricVal = isTotal ? r.net_token : r.token_per_active_member_month;
+        const unit = isTotal ? "Tokens รวมทั้งปี" : "Tokens / คน-เดือน Active";
+        const w = Math.max(8, (metricVal / maxVal) * 100);
+        const sub = isTotal
+          ? `วิ่ง ${fmtNum(r.run_km,1)} km • เดิน ${fmtNum(r.walk_km,1)} km • อื่นๆ ${fmtNum(r.other_exercise_hours,1)} ชม. (${r.registered_members} คน)`
+          : `${r.note} • เฉลี่ย Active ${r.avg_active_members_per_month} คน/เดือน • วิ่ง ${fmtNum(r.run_km_per_active_member_month,1)} km/คน-เดือน`;
+        return `<div class="race-row" style="margin-bottom:22px">
+          <div class="race-head"><span style="font-size:20px;color:${c.fg}">${r.team}</span><span style="font-size:22px;color:${c.primary}">${fmtNum(metricVal, 2)} ${unit}</span></div>
+          <div class="bar-track" style="height:24px"><div class="bar-fill" style="width:${w.toFixed(1)}%;background:${c.primary}"></div></div>
+          <div class="m-meta">${sub}</div>
+        </div>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
+function viewBackbone() {
+  const t5 = REPLAY_DATA.top5_vs_backbone31.top5;
+  const bb = REPLAY_DATA.top5_vs_backbone31.backbone_31;
+  const rows = [
+    ["Net Tokens", bb.net_token, bb.token_share_pct, t5.net_token, t5.token_share_pct, "Tokens"],
+    ["ระยะวิ่ง (Run)", bb.run_km, bb.run_km_share_pct, t5.run_km, t5.run_km_share_pct, "km"],
+    ["ระยะเดิน (Walk)", bb.walk_km, bb.walk_km_share_pct, t5.walk_km, t5.walk_km_share_pct, "km"],
+    ["ออกกำลังกายอื่น", bb.other_exercise_hours, bb.other_hours_share_pct, t5.other_exercise_hours, t5.other_hours_share_pct, "ชม."],
+  ];
+  return `<div class="slide active">
+    <div class="eyebrow">THE BACKBONE 31 • พลังของทุกคน</div>
+    <h2><span style="color:var(--coral)">${fmtNum(bb.token_share_pct, 1)}%</span> ของชมรมมาจากอีก 31 คนนอก Top 5</h2>
+    <p class="sub">ชมรมไม่ได้ยืนอยู่บนคน 5 คน — กำลังหลัก 31 คนสร้างระยะเดินถึง ${fmtNum(bb.walk_km_share_pct,1)}% และระยะวิ่ง ${fmtNum(bb.run_km_share_pct,1)}%</p>
+    <div class="card">
+      ${rows.map(([lbl, bv, bp, tv, tp, u]) => `
+        <div class="race-row">
+          <div class="race-head"><span>${lbl}</span><span>31 คน: ${fmtNum(bv,1)} ${u} (${bp}%) | Top 5: ${fmtNum(tv,1)} (${tp}%)</span></div>
+          <div class="bar-track" style="height:26px;display:flex;background:transparent;gap:4px">
+            <div style="width:${bp}%;background:var(--itsys);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#052e16">31 คน (${bp}%)</div>
+            <div style="width:${tp}%;background:var(--manda);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#082f49">${tp}%</div>
+          </div>
+        </div>
+      `).join("")}
+    </div>
+  </div>`;
+}
+
+function viewTribes() {
+  const members = REPLAY_DATA.member_contributions_36;
+  const pillars = ["Run", "Other", "Hybrid", "Walk"];
+  const list = tribeFilter === "All" ? pillars : [tribeFilter];
+  return `<div class="slide active">
+    <div class="eyebrow">FOUR TRIBES OF NTL • 4 สายพันธุ์</div>
+    <h2>ทุกคนมีสไตล์ที่ถนัดต่างกัน</h2>
+    <div class="controls-row">
+      <div class="seg-group">
+        <button class="seg-btn ${tribeFilter==="All"?"active":""}" onclick="tribeFilter='All';renderCurrentSlide()">ทุกสาย (36)</button>
+        ${pillars.map(p => `<button class="seg-btn ${tribeFilter===p?"active":""}" onclick="tribeFilter='${p}';renderCurrentSlide()">${TRIBE_INFO[p].th} (${members.filter(m=>m.primary_pillar===p).length})</button>`).join("")}
+      </div>
+    </div>
+    <div class="grid-2">
+      ${list.map(p => {
+        const info = TRIBE_INFO[p];
+        const items = members.filter(m => m.primary_pillar === p).sort((a,b) => b.net_token - a.net_token);
+        return `<div class="card" style="border-color:${info.color}66">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div><div class="eyebrow" style="color:${info.color}">${info.code}</div><div style="font-size:24px;font-weight:800">${info.th}</div></div>
+            <span class="pill" style="color:${info.color};border-color:${info.color}">${items.length} คน</span>
+          </div>
+          <div>${items.map(m => `<span class="tribe-pill" onclick="openMember('${m.name}')">
+            <span class="dot" style="background:${TEAM_COLORS[m.team].primary}"></span>${m.name}</span>`).join("")}</div>
+        </div>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
+function viewWall() {
+  const members = REPLAY_DATA.member_contributions_36.filter(m =>
+    (wallTeamFilter === "All" || m.team === wallTeamFilter) &&
+    m.name.toLowerCase().includes(wallSearch.toLowerCase())
+  );
+  return `<div class="slide active">
+    <div class="eyebrow">WALL OF 36 • EVERY MEMBER MATTERS</div>
+    <h2>คลิกชื่อเพื่อเปิดการ์ด Year Replay ส่วนตัว</h2>
+    <div class="controls-row">
+      <div class="seg-group">
+        ${["All", "Mandalorian", "ITSec", "ITSystem"].map(t =>
+          `<button class="seg-btn ${wallTeamFilter===t?"active":""}" onclick="wallTeamFilter='${t}';renderCurrentSlide()">${t === "All" ? "ทั้งหมด (36)" : t}</button>`
+        ).join("")}
+      </div>
+      <input class="search-input" type="text" placeholder="ค้นหาชื่อสมาชิก..." value="${wallSearch}" oninput="wallSearch=this.value;renderCurrentSlide();document.querySelector('.search-input').focus();">
+    </div>
+    <div class="wall-grid">
+      ${members.map(m => {
+        const tc = TEAM_COLORS[m.team];
+        const h = heroInfo(m);
+        const tr = TRIBE_INFO[m.primary_pillar] || TRIBE_INFO.Hybrid;
+        return `<div class="m-tile" style="border-left-color:${tc.primary}" onclick="openMember('${m.name}')">
+          <div class="m-tile-top"><span class="m-name">${m.name}</span><span class="m-team" style="color:${tc.primary}">${m.team}</span></div>
+          <div class="m-hero" style="color:${h.col}">${h.val}</div>
+          <div class="m-meta">${tr.th} • ${fmtNum(m.net_token,1)} Tok • Peak ${fmtM(m.peak_month)}</div>
+        </div>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
+function openMember(name) {
+  const m = REPLAY_DATA.member_contributions_36.find(x => x.name.toLowerCase() === name.toLowerCase());
+  if (!m) return;
+  window.location.hash = "member=" + encodeURIComponent(m.name);
+  const tc = TEAM_COLORS[m.team];
+  const tr = TRIBE_INFO[m.primary_pillar] || TRIBE_INFO.Hybrid;
+  const h = heroInfo(m);
+  const months = REPLAY_DATA.club_monthly.map(r => r.month);
+  const map = memberMonths[m.name] || {};
+  const maxM = Math.max(...months.map(k => map[k] || 0), 1);
+
+  const spark = months.map(k => {
+    const v = map[k] || 0;
+    const isPeak = k === m.peak_month && v > 0;
+    const bh = v > 0 ? Math.max(8, (v / maxM) * 90) : 4;
+    return `<div class="spark-col">
+      <div class="spark-val">${v > 0 ? Math.round(v) : ""}</div>
+      <div class="spark-bar" style="height:${bh}px;background:${isPeak ? tc.primary : (v > 0 ? "#475569" : "#1E293B")}"></div>
+      <div class="spark-lbl">${fmtM(k)}</div>
+    </div>`;
+  }).join("");
+
+  document.getElementById("modalContent").innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <span class="pill" style="color:${tc.fg};background:${tc.bg};border-color:${tc.primary}">${m.team} • ACTIVE ${m.active_months} เดือน</span>
+      <button class="btn" onclick="closeModal()">ปิด ✕</button>
+    </div>
+    <h2 style="margin-bottom:6px">${m.name}</h2>
+    <span class="pill" style="color:${tr.color};border-color:${tr.color};margin-bottom:16px">${tr.code} • ${tr.th}</span>
+    <div class="card" style="border-color:${h.col};margin-bottom:14px">
+      <div class="eyebrow" style="color:${h.col}">SIGNATURE PILLAR</div>
+      <div class="big-num" style="color:${h.col}">${h.val}</div>
+      <div class="m-meta" style="font-size:15px">${h.sub}</div>
+    </div>
+    <div class="grid-4" style="margin-bottom:14px">
+      <div class="card"><div class="m-meta">Net Tokens</div><div style="font-size:26px;font-weight:900">${fmtNum(m.net_token,1)}</div></div>
+      <div class="card"><div class="m-meta">ระยะวิ่ง</div><div style="font-size:26px;font-weight:900">${fmtNum(m.run_km,1)} km</div></div>
+      <div class="card"><div class="m-meta">ระยะเดิน</div><div style="font-size:26px;font-weight:900">${fmtNum(m.walk_km,1)} km</div></div>
+      <div class="card"><div class="m-meta">ออกกำลังกายอื่น</div><div style="font-size:26px;font-weight:900">${fmtNum(m.other_exercise_hours,1)} ชม.</div></div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;font-weight:800"><span>จังหวะรายเดือน</span><span style="color:${tc.primary}">Peak: ${fmtM(m.peak_month)} (${fmtNum(m.peak_month_token,1)} Tok)</span></div>
+      <div class="spark-wrap" style="height:130px">${spark}</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <span style="font-weight:700;color:${tc.fg}">เติมพลังให้ทีม ${m.team} ${m.team_token_share_pct}% (${m.activity_count} กิจกรรม)</span>
+      <button class="btn btn-primary" onclick="downloadMemberPng('${m.name}')">บันทึกรูปการ์ด (PNG 1080×1350)</button>
+    </div>`;
+  document.getElementById("memberModal").classList.add("open");
+}
+
+function closeModal() {
+  document.getElementById("memberModal").classList.remove("open");
+  if (window.location.hash.startsWith("#member=")) history.replaceState(null, "", "#");
+}
+
+function downloadMemberPng(name) {
+  const m = REPLAY_DATA.member_contributions_36.find(x => x.name === name);
+  if (!m) return;
+  const tc = TEAM_COLORS[m.team];
+  const h = heroInfo(m);
+  const tr = TRIBE_INFO[m.primary_pillar] || TRIBE_INFO.Hybrid;
+  const cv = document.createElement("canvas");
+  cv.width = 1080; cv.height = 1350;
+  const ctx = cv.getContext("2d");
+  const g = ctx.createLinearGradient(0, 0, 1080, 1350);
+  g.addColorStop(0, "#070B14"); g.addColorStop(1, "#0F172A");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, 1080, 1350);
+  ctx.fillStyle = tc.fg; ctx.font = "700 24px sans-serif";
+  ctx.fillText("NTL CLUB 2026 • MY YEAR REPLAY", 60, 88);
+  ctx.fillStyle = "#F8FAFC"; ctx.font = "800 68px sans-serif";
+  ctx.fillText(m.name, 60, 190);
+  ctx.fillStyle = tr.color; ctx.font = "700 26px sans-serif";
+  ctx.fillText(`${m.team} • ${tr.th} • ACTIVE ${m.active_months} เดือน`, 60, 240);
+  ctx.fillStyle = "#111827"; ctx.strokeStyle = h.col; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.roundRect(60, 290, 960, 250, 26); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = h.col; ctx.font = "700 24px sans-serif";
+  ctx.fillText("SIGNATURE PILLAR", 96, 344);
+  ctx.fillStyle = "#F8FAFC"; ctx.font = "900 102px sans-serif";
+  ctx.fillText(h.val, 96, 452);
+  ctx.fillStyle = "#CBD5E1"; ctx.font = "600 25px sans-serif";
+  ctx.fillText(h.sub, 96, 504);
+
+  const cards = [
+    ["NET TOKENS", fmtNum(m.net_token,1)],
+    ["ระยะวิ่ง (RUN)", fmtNum(m.run_km,1) + " km"],
+    ["ระยะเดิน (WALK)", fmtNum(m.walk_km,1) + " km"],
+    ["ออกกำลังกายอื่น", fmtNum(m.other_exercise_hours,1) + " ชม."],
+  ];
+  cards.forEach(([lbl, val], idx) => {
+    const bx = 60 + (idx % 2) * 492, by = 574 + Math.floor(idx / 2) * 165;
+    ctx.fillStyle = "#111827"; ctx.strokeStyle = "#334155"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.roundRect(bx, by, 468, 142, 22); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#94A3B8"; ctx.font = "700 22px sans-serif"; ctx.fillText(lbl, bx + 28, by + 44);
+    ctx.fillStyle = "#F8FAFC"; ctx.font = "800 54px sans-serif"; ctx.fillText(val, bx + 28, by + 110);
+  });
+
+  const months = REPLAY_DATA.club_monthly.map(r => r.month);
+  const map = memberMonths[m.name] || {};
+  const maxM = Math.max(...months.map(k => map[k] || 0), 1);
+  ctx.fillStyle = "#111827"; ctx.beginPath(); ctx.roundRect(60, 910, 960, 240, 24); ctx.fill();
+  ctx.fillStyle = "#E2E8F0"; ctx.font = "700 24px sans-serif";
+  ctx.fillText(`MONTHLY RHYTHM • PEAK: ${fmtM(m.peak_month)} (${fmtNum(m.peak_month_token,1)} Tok)`, 96, 956);
+  const slot = 888 / months.length;
+  months.forEach((k, i) => {
+    const v = map[k] || 0, cx = 96 + i * slot + slot / 2;
+    if (v > 0) {
+      const bh = Math.max(10, (v / maxM) * 110);
+      ctx.fillStyle = k === m.peak_month ? tc.primary : "#475569";
+      ctx.fillRect(cx - 22, 1104 - bh, 44, bh);
+    }
+    ctx.fillStyle = "#94A3B8"; ctx.font = "700 18px sans-serif";
+    ctx.fillText(fmtM(k), cx - 16, 1132);
+  });
+
+  ctx.fillStyle = tc.bg; ctx.beginPath(); ctx.roundRect(60, 1180, 960, 74, 20); ctx.fill();
+  ctx.fillStyle = "#F8FAFC"; ctx.font = "700 24px sans-serif";
+  ctx.fillText(`เติมพลังให้ทีม ${m.team} ${m.team_token_share_pct}% (${m.activity_count} กิจกรรม)`, 96, 1226);
+
+  const a = document.createElement("a");
+  a.download = `${m.name}_year_replay_2026.png`;
+  a.href = cv.toDataURL("image/png");
+  a.click();
+}
+
+document.getElementById("prevBtn").onclick = () => goSlide(currentSlide - 1);
+document.getElementById("nextBtn").onclick = () => goSlide(currentSlide + 1);
+document.getElementById("openPickerBtn").onclick = () => goSlide(6);
+document.getElementById("fullscreenBtn").onclick = () => {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+  else document.exitFullscreen().catch(() => {});
+};
+document.getElementById("memberModal").onclick = (e) => { if (e.target.id === "memberModal") closeModal(); };
+document.addEventListener("keydown", (e) => {
+  if (e.target.tagName === "INPUT") return;
+  if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); goSlide(currentSlide + 1); }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); goSlide(currentSlide - 1); }
+  else if (e.key === "Escape") closeModal();
+  else if (e.key.toLowerCase() === "f") document.getElementById("fullscreenBtn").click();
+});
+
+renderNav();
+renderCurrentSlide();
+if (window.location.hash.startsWith("#member=")) {
+  openMember(decodeURIComponent(window.location.hash.slice(8)));
+}
+</script>
+</body>
+</html>
