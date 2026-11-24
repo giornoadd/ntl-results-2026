@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Run Khao Yai 2026 — NTL Club Finishers Leaderboard</title>
+<style>
+  :root {
+    --bg0: #070B14;
+    --bg1: #0B1120;
+    --card: rgba(17, 24, 39, 0.94);
+    --border: rgba(148, 163, 184, 0.22);
+    --text: #F8FAFC;
+    --muted: #94A3B8;
+    --manda: #38BDF8;
+    --itsec: #F59E0B;
+    --itsys: #10B981;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: radial-gradient(circle at 85% 10%, rgba(56,189,248,0.16), transparent 45%),
+                radial-gradient(circle at 12% 90%, rgba(245,158,11,0.12), transparent 45%),
+                linear-gradient(135deg, var(--bg0), var(--bg1) 55%, #0F172A);
+    color: var(--text);
+    font-family: 'Noto Sans Thai UI', 'Noto Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+    padding: 26px 20px 60px;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  .eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 2px; color: var(--manda); margin-bottom: 6px; }
+  h1 { font-size: clamp(28px, 4vw, 48px); font-weight: 900; margin-bottom: 8px; }
+  .sub { color: var(--muted); font-size: 15px; margin-bottom: 20px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 22px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 16px 18px; }
+  .stat-val { font-size: 32px; font-weight: 900; margin-top: 4px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+  .seg { display: inline-flex; background: #0F172A; border: 1px solid var(--border); border-radius: 999px; padding: 3px; gap: 3px; flex-wrap: wrap; }
+  .seg button {
+    background: transparent; border: none; color: var(--muted); padding: 7px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .seg button.active { background: var(--manda); color: #062033; }
+  .sec-title { font-size: 20px; font-weight: 800; margin: 22px 0 12px; display: flex; align-items: center; gap: 10px; }
+  .list { display: grid; gap: 10px; }
+  .row {
+    display: grid; grid-template-columns: 52px 1fr auto; gap: 14px; align-items: center;
+    background: var(--card); border: 1px solid var(--border); border-left-width: 5px;
+    border-radius: 16px; padding: 14px 16px; cursor: pointer; transition: transform 0.14s, border-color 0.14s;
+  }
+  .row:hover { transform: translateY(-2px); border-color: var(--manda); }
+  .rk {
+    width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 18px; border: 2px solid #475569; background: #0F172A;
+  }
+  .rk-1 { border-color: #FBBF24; background: #451A03; color: #FEF08A; }
+  .rk-2 { border-color: #CBD5E1; background: #1E293B; color: #F8FAFC; }
+  .rk-3 { border-color: #F97316; background: #431407; color: #FED7AA; }
+  .pill {
+    display: inline-block; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 999px;
+    border: 1px solid var(--border); margin-left: 8px; vertical-align: middle;
+  }
+  .right { text-align: right; }
+  .tm { font-size: 26px; font-weight: 900; font-variant-numeric: tabular-nums; }
+  .pc { font-size: 13px; font-weight: 700; color: var(--muted); }
+  .modal-bg {
+    position: fixed; inset: 0; background: rgba(3,7,18,0.82); backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center; padding: 18px; z-index: 50;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    width: min(560px, 100%); background: #0B1120; border: 1px solid var(--border);
+    border-radius: 22px; padding: 24px;
+  }
+  .kv { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(148,163,184,0.12); font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">ALLIANZ AYUDHYA WORLD RUN 2026 • KHAO YAI</div>
+  <h1>สรุปผลการแข่งขัน &amp; อันดับสมาชิกชมรม NTL</h1>
+  <p class="sub">TAT Eco Park เขาใหญ่ • 22 พฤศจิกายน 2026 • เฉพาะนักกีฬาชมรมที่ส่งผลเข้าร่วมจริง 16 คน</p>
+
+  <div class="stats-grid" id="statsGrid"></div>
+  <div class="controls">
+    <div class="seg" id="catTabs"></div>
+    <div class="seg" id="teamTabs"></div>
+  </div>
+  <div id="boardContainer"></div>
+</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal" id="modalBody"></div>
+</div>
+
+<script>
+const RACE_DATA = {"event": {"name": "Allianz Ayudhya World Run Thailand Series 2026 — Khao Yai", "venue": "TAT Eco Park, Khao Yai, Nakhon Ratchasima", "race_date": "2026-11-22", "source_recovery_note": "Verified from Google Drive LINE ingestion log (ingress_log rows 3752-3796); missing from Q4 score.csv due to row-248 overwrite bug."}, "summary": {"total_finishers": 16, "half_marathon_21k_count": 9, "mini_marathon_10k_count": 7, "team_counts": {"Mandalorian": 6, "ITSystem": 6, "ITSec": 4}, "top100_awards": 3, "ag_podium_awards": 1}, "finishers": [{"category": "21.1KM", "club_rank": 1, "name": "TER", "team": "Mandalorian", "time_str": "01:35:25", "time_sec": 5725, "time_source": "Chip", "gun_time_str": "01:35:33", "pace_str": "4:31", "pace_sec": 271, "gps_distance_km": null, "bib_no": "49", "age_group": "M30-39", "official_overall": "9 / 504", "official_gender": "9 / 357", "official_ag": "4 / 131", "award": "Age Group Top 3 (#2) • Top 100 (#9)", "splits": "2.1K 00:09:04 | 10.7K 00:47:06 | 14.6K 01:04:28", "avg_hr": null, "cadence_spm": null, "note": "Official CheckRace slip (redacted surname respected)", "drive_file_id": "1K8R6MknGuLr4EfqF11gCxUcxylR3pgER", "evidence_file": "04_evidence_media/khaoyai_2026_results/21k_r01_Mandalorian_TER.jpg"}, {"category": "21.1KM", "club_rank": 2, "name": "ToRo", "team": "Mandalorian", "time_str": "01:55:10", "time_sec": 6910, "time_source": "Chip", "gun_time_str": "01:55:15", "pace_str": "5:27", "pace_sec": 327, "gps_distance_km": null, "bib_no": "50", "age_group": "M30-39", "official_overall": "60 / 126", "official_gender": "57 / 108", "official_ag": "22 / 41", "award": "Top 100 (#57)", "splits": "2.1K 00:11:09 | 10.7K 00:58:43 | 14.6K 01:18:52", "avg_hr": null, "cadence_spm": null, "note": "Official CheckRace slip", "drive_file_id": "1QpxIJOdGQbHFCKtK3ebIs-JbfPUSl-2F", "evidence_file": "04_evidence_media/khaoyai_2026_results/21k_r02_Mandalorian_ToRo.jpg"}, {"category": "21.1KM", "club_rank": 3, "name": "Jojo", "team": "ITSystem", "time_str": "02:20:54", "time_sec": 8454, "time_source": "Chip", "gun_time_str": "02:21:36", "pace_str": "6:40", "pace_sec": 400, "gps_distance_km": null, "bib_no": "18", "age_group": "M30-39", "official_overall": "195 / 412", "official_gender": "161 / 301", "official_ag": "61 / 113", "award": "", "splits": "2.1K 00:14:50 | 10.7K 01:11:35 | 14.6K 01:36:56", "avg_hr": null, "cadence_spm": null, "note": "Official CheckRace E-Slip", "drive_file_id": "1VAczX5u25MCdc3eoZRX_zK_RWisRN0Dw", "evidence_file": "04_evidence_media/khaoyai_2026_results/21k_r03_ITSystem_Jojo.jpg"}, {"category": "21.1KM", "club_rank": 4, "name": "A", "team": "ITSec", "time_str": "02:25:11", "time_sec": 8711, "time_source": "GPS", "gun_time_str": "", "pace_str": "6:51", "pace_sec": 411, "gps_distance_km": 21.2, "bib_no": "", "age_group": "", "official_overall": "", "official_gender": "", "official_ag": "", "award": "", "splits": "", "avg_hr": 163, "cadence_spm": null, "note": "Garmin GPS (21.20 km, Avg HR 163 bpm)", "drive_file_id": "1dl5F7RlDJiLvwMddTZu49RCNkndcpKDR", "evidence_file": "04_evidence_media/khaoyai_2026_results/21k_r04_ITSec_A.jpg"}, {"category": "21.1KM", "club_rank": 5, "name": "CHAT", "team": "ITSystem", "time_str": "02:46", "time_sec": 10000, "time_source": "GPS", "gun_time_str": "", "pace_str": "7:45", "pace_sec": 465, "gps_distance_km": 21.52, "bib_no": "", "age_group": "", "official_overall": "", "official_gender": "", "official_ag": "", "award": "2nd Best HM (-8m 59s)", "splits": "", "avg_hr": null, "cadence_spm": null, "note": "Strava GPS displays minute-only 2:46 (21.52 km @ 7:45/km; faster pace than Mo 7:51/km on 21.24 km)", "drive_file_id": "1tSdLGXQC39mF7V3tJJ1aJ0kmaJme3-9F", "evidence_file": "04_evidence_media/khaoyai_2026_results/21k_r05_ITSystem_CHAT.jpg"}, {"category": "21.1KM", "club_rank": 6, "name": "Mo", "team": "ITSec", "time_str": "02:46:42", "time_sec": 10002, "time_source": "GPS", "gun_time_str": "", "pace_str": "7:51", "pace_sec": 471, "gps_distance_km": 21.24, "bib_no": "", "age_group": "", "official_overall": "", "official_gender": "", "official_ag": "", "award": "All-Time HM PR (-7m 08s)", "splits": "", "avg_hr": 151, "cadence_spm": null, "note": "Strava GPS (21.24 km, Avg HR 151 bpm, Elev +68 m)", "drive_file_id": "1DeIUe58C4G7QMq3siA_cTqbE3bK0CSzy", "evidence_file": "04_evidence_media/khaoyai_2026_results/21k_r06_ITSec_Mo.jpg"}, {"category": "21.1KM", "club_rank": 7, "name": "Jo", "team": "ITSec", "time_str": "03:05:05", "time_sec": 11105, "time_source": "GPS", "gun_time_str": "", "pace_str": "8:41", "pace_sec": 521, "gps_distance_km": 21.3, "bib_no": "", "age_group": "", "official_overall": "", "official_gender": "", "official_ag": "", "award": "", "splits": "", "avg_hr": 144, "cadence_spm": 164, "note": "Watch GPS (21.30 km, Avg HR 144 bpm, Cadence 164 spm, Elev +166 m)", "drive_file_id": "1J6iUOqdqlhhWRd2ZLbhdu9KIIOluXHHI", "evidence_file": "04_evidence_media/khaoyai_2026_results/21k_r07_ITSec_Jo.jpg"}, {"category": "21.1KM", "club_rank": 8, "name": "Oum", "team": "ITSystem", "time_str": "03:11:45", "time_sec": 11505, "time_source": "GPS", "gun_time_str": "", "pace_str": "9:08", "pace_sec": 548, "gps_distance_km": 21.0, "bib_no": "", "age_group": "", "official_overall": "", "official_gender": "", "official_ag": "", "award": "", "splits": "", "avg_hr": 160, "cadence_spm": null, "note": "Suunto GPS (21.00 km, Avg HR 160 bpm; pace computed 3:11:45 / 21.00 km)", "drive_file_id": "164L_eWdaRxi_XN96duUpvok47wY2urJI", "evidence_file": "04_evidence_media/khaoyai_2026_results/21k_r08_ITSystem_Oum.jpg"}, {"category": "21.1KM", "club_rank": 9, "name": "PP", "team": "ITSystem", "time_str": "03:29:24", "time_sec": 12564, "time_source": "GPS", "gun_time_str": "", "pace_str": "9:43", "pace_sec": 583, "gps_distance_km": 21.54, "bib_no": "", "age_group": "", "official_overall": "", "official_gender": "", "official_ag": "", "award": "", "splits": "", "avg_hr": null, "cadence_spm": null, "note": "GPS App (21.54 km, 2,747 kcal)", "drive_file_id": "1pKB3aaymES3-RRDlJ4kr-i3INX4El2pN", "evidence_file": "04_evidence_media/khaoyai_2026_results/21k_r09_ITSystem_PP.jpg"}, {"category": "10KM", "club_rank": 1, "name": "GIO", "team": "Mandalorian", "time_str": "00:58:56", "time_sec": 3536, "time_source": "Chip", "gun_time_str": "00:59:03", "pace_str": "5:53", "pace_sec": 353, "gps_distance_km": 10.0, "bib_no": "1290", "age_group": "M40-49", "official_overall": "106 / 231", "official_gender": "95 / 174", "official_ag": "34 / 56", "award": "Top 100 (#99) • Sub-60", "splits": "2.1K 00:11:44 | 6.9K 00:40:22", "avg_hr": 171, "cadence_spm": 173, "note": "Official CheckRace slip (10.00 km GPS PR 57:08 / 57:09)", "drive_file_id": "1S1z5uDUeka3NuMeHj2EkxapQfqqyPz00", "evidence_file": "04_evidence_media/khaoyai_2026_results/10k_r01_Mandalorian_GIO.jpg"}, {"category": "10KM", "club_rank": 2, "name": "Big", "team": "Mandalorian", "time_str": "01:04:48", "time_sec": 3888, "time_source": "Chip", "gun_time_str": "01:04:55", "pace_str": "6:28", "pace_sec": 388, "gps_distance_km": null, "bib_no": "1287", "age_group": "M30-39", "official_overall": "188 / 1321", "official_gender": "150 / 645", "official_ag": "72 / 271", "award": "", "splits": "2.1K 00:12:11 | 6.9K 00:43:34", "avg_hr": null, "cadence_spm": null, "note": "Official CheckRace slip", "drive_file_id": "1H1uttYG4vLp7-0EcHpJWarGSAkbdj_fR", "evidence_file": "04_evidence_media/khaoyai_2026_results/10k_r02_Mandalorian_Big.jpg"}, {"category": "10KM", "club_rank": 3, "name": "Boat", "team": "Mandalorian", "time_str": "01:07", "time_sec": 4020, "time_source": "GPS", "gun_time_str": "", "pace_str": "6:32", "pace_sec": 392, "gps_distance_km": 10.28, "bib_no": "", "age_group": "", "official_overall": "", "official_gender": "", "official_ag": "", "award": "", "splits": "", "avg_hr": null, "cadence_spm": null, "note": "Strava GPS displays minute-only 1ชม. 7น. (10.28 km @ 6:32/km)", "drive_file_id": "18GaRhBUKeK-_OLHvIo9huBJExIckC2fP", "evidence_file": "04_evidence_media/khaoyai_2026_results/10k_r03_Mandalorian_Boat.jpg"}, {"category": "10KM", "club_rank": 4, "name": "EM", "team": "Mandalorian", "time_str": "01:21:31", "time_sec": 4891, "time_source": "Chip", "gun_time_str": "01:21:39", "pace_str": "8:09", "pace_sec": 489, "gps_distance_km": null, "bib_no": "2560", "age_group": "M30-39", "official_overall": "564 / 1321", "official_gender": "356 / 645", "official_ag": "155 / 271", "award": "", "splits": "2.1K 00:13:54 | 6.9K 00:56:00", "avg_hr": null, "cadence_spm": null, "note": "Official CheckRace slip", "drive_file_id": "1Acp1ZHqvcbayRiQN-T3fFCtw1Vm8WK8S", "evidence_file": "04_evidence_media/khaoyai_2026_results/10k_r04_Mandalorian_EM.jpg"}, {"category": "10KM", "club_rank": 5, "name": "Bell", "team": "ITSec", "time_str": "01:26:07", "time_sec": 5167, "time_source": "GPS", "gun_time_str": "", "pace_str": "8:11", "pace_sec": 491, "gps_distance_km": 10.51, "bib_no": "", "age_group": "", "official_overall": "", "official_gender": "", "official_ag": "", "award": "", "splits": "", "avg_hr": 163, "cadence_spm": 156, "note": "Apple Watch GPS Pak Chong (10.51 km, Avg HR 163 bpm, Cadence 156 spm, Power 168 W, Elev +87 m)", "drive_file_id": "1ftaOwu8udhozCe7lbDByEEm0cqdhFP5t", "evidence_file": "04_evidence_media/khaoyai_2026_results/10k_r05_ITSec_Bell.jpg"}, {"category": "10KM", "club_rank": 6, "name": "tae", "team": "ITSystem", "time_str": "01:50:50", "time_sec": 6650, "time_source": "GPS", "gun_time_str": "", "pace_str": "10:57", "pace_sec": 657, "gps_distance_km": 10.12, "bib_no": "", "age_group": "", "official_overall": "", "official_gender": "", "official_ag": "", "award": "", "splits": "", "avg_hr": null, "cadence_spm": null, "note": "Samsung Health GPS (10.12 km, 5.4 km/h, 1,118 kcal)", "drive_file_id": "1fQ5ZqtJGIe9cs8C4i5fip86K3IGNxLnr", "evidence_file": "04_evidence_media/khaoyai_2026_results/10k_r06_ITSystem_tae.jpg"}, {"category": "10KM", "club_rank": 7, "name": "AKPONG", "team": "ITSystem", "time_str": "02:10:27", "time_sec": 7827, "time_source": "Chip", "gun_time_str": "02:12:34", "pace_str": "13:02", "pace_sec": 782, "gps_distance_km": null, "bib_no": "1271", "age_group": "M30-39", "official_overall": "1304 / 1321", "official_gender": "639 / 645", "official_ag": "267 / 271", "award": "", "splits": "2.1K 00:28:04 | 6.9K 01:30:03", "avg_hr": null, "cadence_spm": null, "note": "Official CheckRace slip", "drive_file_id": "1wzFC-elfoFPL0Sk31wkN8efEkl2yvHG1", "evidence_file": "04_evidence_media/khaoyai_2026_results/10k_r07_ITSystem_AKPONG.jpg"}]};
+const TEAM_COLORS = {
+  Mandalorian: { primary: "#38BDF8", fg: "#BAE6FD", bg: "#082F49" },
+  ITSec: { primary: "#F59E0B", fg: "#FDE68A", bg: "#451A03" },
+  ITSystem: { primary: "#10B981", fg: "#A7F3D0", bg: "#064E3B" },
+};
+
+let catFilter = "ALL";
+let teamFilter = "All";
+
+function renderStats() {
+  const s = RACE_DATA.summary;
+  document.getElementById("statsGrid").innerHTML = `
+    <div class="card"><div class="pc">ผู้เข้าร่วมจบเรซทั้งหมด</div><div class="stat-val" style="color:var(--manda)">${s.total_finishers} คน</div></div>
+    <div class="card"><div class="pc">21.1 KM Half Marathon</div><div class="stat-val" style="color:#38BDF8">${s.half_marathon_21k_count} คน</div></div>
+    <div class="card"><div class="pc">10 KM Mini Marathon</div><div class="stat-val" style="color:#10B981">${s.mini_marathon_10k_count} คน</div></div>
+    <div class="card"><div class="pc">Mandalorian / ITSystem / ITSec</div><div class="stat-val" style="font-size:24px;margin-top:10px">${s.team_counts.Mandalorian} / ${s.team_counts.ITSystem} / ${s.team_counts.ITSec}</div></div>
+    <div class="card"><div class="pc">รางวัล Top 100 &amp; AG</div><div class="stat-val" style="color:var(--itsec)">${s.top100_awards} / ${s.ag_podium_awards}</div></div>
+  `;
+}
+
+function renderControls() {
+  const cats = [["ALL", "ทั้งหมด (16 คน)"], ["21.1KM", "21.1 KM (9 คน)"], ["10KM", "10 KM (7 คน)"]];
+  document.getElementById("catTabs").innerHTML = cats.map(([k, lbl]) =>
+    `<button class="${catFilter===k?"active":""}" onclick="catFilter='${k}';renderAll()">${lbl}</button>`
+  ).join("");
+  const teams = [["All", "ทุกทีม"], ["Mandalorian", "Mandalorian"], ["ITSystem", "ITSystem"], ["ITSec", "ITSec"]];
+  document.getElementById("teamTabs").innerHTML = teams.map(([k, lbl]) =>
+    `<button class="${teamFilter===k?"active":""}" onclick="teamFilter='${k}';renderAll()">${lbl}</button>`
+  ).join("");
+}
+
+function renderRows(list) {
+  return `<div class="list">` + list.map(r => {
+    const tc = TEAM_COLORS[r.team];
+    const rkCls = r.club_rank <= 3 ? `rk-${r.club_rank}` : "";
+    const sub = [r.award, r.official_overall ? `Overall ${r.official_overall} | AG ${r.official_ag}` : "", r.gps_distance_km ? `${r.gps_distance_km.toFixed(2)} km` : ""].filter(Boolean).join(" • ") || r.note;
+    return `<div class="row" style="border-left-color:${tc.primary}" onclick="openDetail('${r.category}', ${r.club_rank})">
+      <div class="rk ${rkCls}">${r.club_rank}</div>
+      <div>
+        <div><strong style="font-size:19px">${r.name}</strong>
+          <span class="pill" style="color:${tc.fg};background:${tc.bg};border-color:${tc.primary}">${r.team}</span>
+          <span class="pill" style="color:${r.time_source==='Chip'?'#7DD3FC':'#DDD6FE'}">${r.time_source.toUpperCase()}</span>
+        </div>
+        <div class="pc" style="margin-top:4px;color:${r.award?'#FDE68A':'var(--muted)'}">${sub}</div>
+      </div>
+      <div class="right">
+        <div class="tm">${r.time_str}</div>
+        <div class="pc" style="color:${tc.fg}">${r.pace_str} /km</div>
+      </div>
+    </div>`;
+  }).join("") + `</div>`;
+}
+
+function renderBoard() {
+  const cats = catFilter === "ALL" ? ["21.1KM", "10KM"] : [catFilter];
+  const html = cats.map(c => {
+    const list = RACE_DATA.finishers
+      .filter(r => r.category === c && (teamFilter === "All" || r.team === teamFilter))
+      .sort((a, b) => a.club_rank - b.club_rank);
+    const label = c === "21.1KM" ? "21.1 KM Half Marathon" : "10 KM Mini Marathon";
+    return `<div class="sec-title">${label} (${list.length} คน)</div>` + (list.length ? renderRows(list) : `<div class="card pc">ไม่มีนักกีฬาในตัวกรองนี้</div>`);
+  }).join("");
+  document.getElementById("boardContainer").innerHTML = html;
+}
+
+function openDetail(cat, rank) {
+  const r = RACE_DATA.finishers.find(x => x.category === cat && x.club_rank === rank);
+  if (!r) return;
+  const tc = TEAM_COLORS[r.team];
+  document.getElementById("modalBody").innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <span class="pill" style="margin-left:0;color:${tc.fg};background:${tc.bg};border-color:${tc.primary}">${r.category} • อันดับชมรม #${r.club_rank} • ${r.team}</span>
+      <button onclick="document.getElementById('modalBg').classList.remove('open')" style="background:#1E293B;color:#F8FAFC;border:1px solid var(--border);padding:5px 12px;border-radius:999px;cursor:pointer">ปิด ✕</button>
+    </div>
+    <h2 style="font-size:28px;margin-bottom:4px">${r.name}</h2>
+    <div style="font-size:38px;font-weight:900;color:${tc.primary};margin-bottom:14px">${r.time_str} <span style="font-size:18px;color:var(--muted)">(${r.pace_str} /km • ${r.time_source})</span></div>
+    ${r.gun_time_str ? `<div class="kv"><span>Gun Time</span><strong>${r.gun_time_str}</strong></div>` : ""}
+    ${r.bib_no ? `<div class="kv"><span>BIB / รุ่นอายุ</span><strong>${r.bib_no} (${r.age_group})</strong></div>` : ""}
+    ${r.official_overall ? `<div class="kv"><span>Official Overall / Gender / AG</span><strong>${r.official_overall} | ${r.official_gender} | ${r.official_ag}</strong></div>` : ""}
+    ${r.splits ? `<div class="kv"><span>CheckTime Splits</span><strong>${r.splits}</strong></div>` : ""}
+    ${r.gps_distance_km ? `<div class="kv"><span>GPS Distance</span><strong>${r.gps_distance_km.toFixed(2)} km</strong></div>` : ""}
+    ${r.avg_hr ? `<div class="kv"><span>Avg Heart Rate</span><strong>${r.avg_hr} bpm</strong></div>` : ""}
+    ${r.cadence_spm ? `<div class="kv"><span>Cadence</span><strong>${r.cadence_spm} spm</strong></div>` : ""}
+    ${r.award ? `<div class="kv"><span>Award / Milestone</span><strong style="color:#FDE68A">${r.award}</strong></div>` : ""}
+    <div class="kv" style="border:none"><span>หมายเหตุ / หลักฐาน</span><span style="text-align:right;max-width:65%;color:var(--muted)">${r.note}</span></div>
+  `;
+  document.getElementById("modalBg").classList.add("open");
+}
+
+document.getElementById("modalBg").onclick = (e) => { if (e.target.id === "modalBg") e.target.classList.remove("open"); };
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") document.getElementById("modalBg").classList.remove("open"); });
+
+function renderAll() { renderStats(); renderControls(); renderBoard(); }
+renderAll();
+</script>
+</body>
+</html>
